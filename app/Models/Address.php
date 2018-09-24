@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-    //
+    protected $connection = 'mysql';  // 多数据库操作时最好进行绑定
+    protected $table = 'addresses'; // 指定表
+    public $timestamps = true;  // 是否自动维护时间戳
+    protected $primaryKey = 'addresses_id';
+
 }

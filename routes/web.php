@@ -19,6 +19,9 @@ Route::get('/test',function(){
     return 'test fine!';
 });
 
+//登录
+Route::post('login',"LoginController@login");
+
 //用户相关
 Route::group(['prefix'=>'user'],function (){
     //添加用户

@@ -17,6 +17,7 @@ class CreateExpressTable extends Migration
             $table->string('express_id');
             $table->string('name');
             $table->primary('express_id');
+            $table->timestamps();
         });
     }
 

@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('phone');
             $table->dateTime('register_time');
             $table->primary('user_id');
+            $table->timestamps();
         });
     }
 

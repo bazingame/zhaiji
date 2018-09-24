@@ -22,6 +22,7 @@ class CreateDeliverersTable extends Migration
             $table->string('phone');
             $table->dateTime('register_time');
             $table->primary('deliverer_id');
+            $table->timestamps();
         });
     }
 
