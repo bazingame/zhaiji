@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
     {
          $this->call([
              expressTableSeeder::class,
+             addressTableSeeder::class,
+             userTableSeeder::class,
              statisticsTableSeeder::class
          ]);
     }

@@ -31,7 +31,7 @@ class UserController extends Controller
         $user->open_id = $request->open_id;
         $user->phone = $request->phone;
         $user->headimg_url = $request->headimg_url;
-        $user->user_id = sprintf("%08d",$user_count+1);
+        $user->user_id = "U_".sprintf("%08d",$user_count+1);
         $user->register_time = time();
         if($user->save()){
             $statistics->user_count++;

@@ -60,7 +60,12 @@ class Controller extends BaseController
             -4019 => 'address_detail参数错误',
             -4020 => '添加失败',
             -4021 => '删除失败',
-            -4021 => '删除失败',
+            -4022 => '下单失败',
+            -4023 => '鉴权失败',
+            -4024 => '接单失败',
+            -4025 => 'order_id参数错误',
+            -4026 => '不可确认状态',
+            -4027 => '不可接单状态',
 
         ];
         return $msgForCode[$errcode];
@@ -74,6 +79,12 @@ class Controller extends BaseController
             }
         }
         return array(true,null);
+    }
+
+    //获取user_id
+    public function getUserId(\Illuminate\Http\Request  $request){
+        $header = $request->headers->all();
+        return decrypt($header['authorization'][0]);
     }
 
 }

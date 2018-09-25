@@ -20,6 +20,7 @@ class CreateAddressesTable extends Migration
             $table->string('city');
             $table->string('town');
             $table->string('address_detail');
+            $table->string('phone');
             $table->primary('address_id');
             $table->timestamps();
         });

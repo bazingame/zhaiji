@@ -11,7 +11,7 @@ class AddressController extends Controller
 
     //添加地址
     public function addAddress(Request $request){
-        $check = $this->checkParam($request,array('user_id','province','city','town','address_detail'),array('-4008','-4016','-4017','-4018','-4019'));
+        $check = $this->checkParam($request,array('user_id','province','city','town','address_detail','phone'),array('-4008','-4016','-4017','-4018','-4019','-4015'));
         if(!$check[0]){
             return self::setResponse($check[1],400,$check[1]);
         }
@@ -20,12 +20,14 @@ class AddressController extends Controller
         $address_count = $statistics['address_count'];
 
         $address = new Address();
-        $address->address_id = sprintf("%08d",$address_count+1);
+        $address->address_id = "A_".sprintf("%08d",$address_count+1);
         $address->user_id = $request->user_id;
         $address->province = $request->province;
         $address->city = $request->city;
         $address->town = $request->town;
         $address->address_detail = $request->address_detail;
+        $address->phone = $request->phone;
+        //TODO 检查phone正确性
         if($address->save()){
             $statistics->address_count++;
             $statistics->save();
