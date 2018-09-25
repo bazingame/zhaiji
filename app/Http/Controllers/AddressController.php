@@ -11,7 +11,8 @@ class AddressController extends Controller
 
     //添加地址
     public function addAddress(Request $request){
-        $check = $this->checkParam($request,array('user_id','province','city','town','address_detail','phone'),array('-4008','-4016','-4017','-4018','-4019','-4015'));
+        $request->user_id = $this->getUserId($request);
+        $check = $this->checkParam($request,array('province','city','town','address_detail','phone'),array('-4016','-4017','-4018','-4019','-4015'));
         if(!$check[0]){
             return self::setResponse($check[1],400,$check[1]);
         }
@@ -38,7 +39,8 @@ class AddressController extends Controller
     }
 
     public function deleteAddress(Request $request){
-        if($address = Address::where('address_id','=',$request->address_id)->first()){
+        $request->user_id = $this->getUserId($request);
+        if($address = Address::where('address_id','=',$request->address_id)->where('user_id','=',$request->user_id)->first()){
             $address->delete();
             return self::setResponse(null,200,0);
         }else{
@@ -47,7 +49,8 @@ class AddressController extends Controller
     }
 
     public function reviseAddress(Request $request){
-        if($address = Address::where('address_id','=',$request->address_id)->first()){
+        $request->user_id = $this->getUserId($request);
+        if($address = Address::where('address_id','=',$request->address_id)->where('user_id','=',$request->user_id)->first()){
             if($request->has('province'))
                 $address->province = $request->province;
             if($request->has('city')){
@@ -58,6 +61,9 @@ class AddressController extends Controller
             }
             if($request->has('address_detail')){
                 $address->address_detail = $request->address_detail;
+            }
+            if($request->has('phone')){
+                $address->phone = $request->phone;
             }
 
             if($address->save()){

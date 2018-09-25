@@ -69,6 +69,7 @@ class Controller extends BaseController
             -4028 => '不可取消状态',
             -4029 => '不可评价状态',
             -4030 => '此账户不可接单',
+            -4031 => 'money参数错误',
 
         ];
         return $msgForCode[$errcode];

@@ -24,10 +24,10 @@ Route::post('login',"LoginController@login");
 
 //用户相关
 Route::group(['prefix'=>'user'],function (){
-    //添加用户
+    //注册
     Route::post('/','UserController@addUser');
     //修改信息
-    Route::patch('/{user_id}',['middleware'=>'user_auth','uses'=>'UserController@reviseUser']);
+    Route::patch('/',['middleware'=>'user_auth','uses'=>'UserController@reviseUser']);
     //删除用户
     Route::delete('/{user_id}','UserController@deleteUser');
 });
@@ -50,7 +50,7 @@ Route::group(['prefix'=>'order','middleware'=>'user_auth'],function(){
 
 
 //地址相关
-Route::group(['prefix'=>'address'],function (){
+Route::group(['prefix'=>'address','middleware'=>'user_auth'],function (){
     //添加地址
     Route::post('/',"AddressController@addAddress");
     //删除地址
@@ -71,6 +71,6 @@ Route::group(['prefix'=>'deliverer'],function (){
     //删除快递员
     Route::delete('/{deliverer_id}','DelivererController@deleteDeliverer');
     //接单
-    Route::patch('/receive/{order_id}','OrderController@receiveOrder');
+    Route::post('/receive/{order_id}',['middleware'=>'user_auth','uses'=>'OrderController@receiveOrder']);
 });
 

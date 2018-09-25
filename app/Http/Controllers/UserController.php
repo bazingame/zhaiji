@@ -44,7 +44,7 @@ class UserController extends Controller
 
     //修改手机号
     public function reviseUser(Request $request){
-        $user_id = $request->route('user_id');
+        $user_id = $this->getUserId($request);
 
         if($user= User::where('user_id','=',$user_id)->first()){
             //修改phone
