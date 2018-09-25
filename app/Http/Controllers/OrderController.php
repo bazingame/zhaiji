@@ -94,7 +94,15 @@ class OrderController extends Controller
             //只有状态为未接单、已接单才可以取消
             //TODO 可取消状态
             if($order->status==1){
-                $order->
+                $order->status = 4;
+                $order->cancel_reason = $request->cancel_reason;
+                if($order->save()){
+                    return self::setResponse(null,200,0);
+                }else{
+                    return self::setResponse(null,400,-4006);
+                }
+            }else{
+                return self::setResponse(null,400,-4028);
             }
         }else{
             return self::setResponse(null,400,-4025);
@@ -108,7 +116,8 @@ class OrderController extends Controller
         if($order = Order::where('order_id','=',$order_id)->where('user_id','=',$user_id)->first()){
             //只有是已接单状态的才可以修改
             if($order->status==2){
-                $order->statua = 3;
+                $order->status = 3;
+                //TODO 快递员加一单
                 if($order->save()) {
                     return self::setResponse(null, 200, 0);
                 }else{
@@ -123,23 +132,40 @@ class OrderController extends Controller
     }
 
 
-
     //评价订单
     public function markOrder(Request $request){
-
+        $user_id = $this->getUserId($request);
+        $order_id = $request->order_id;
+        if($order = Order::where('order_id','=',$order_id)->where('user_id','=',$user_id)->first()){
+            //只有是已完成状态的才可以修改
+            if($order->status==3){
+                $order->mark_status = 1;
+                $order->mark = $request->mark;
+                if($order->save()) {
+                    return self::setResponse(null, 200, 0);
+                }else{
+                    return self::setResponse(null, 500, -4006);
+                }
+            }else{
+                return self::setResponse(null, 400, -4029);
+            }
+        }else{
+            return self::setResponse(null, 400, -4025);
+        }
     }
-
-
 
     //接单(快递员操作)
     public function receiveOrder(Request $request){
         $deliverer_id = $this->getUserId($request);
+        if(substr($deliverer_id,0,1)!='D'){
+            return self::setResponse(null, 400, -4030);
+        }
         $order_id = $request->order_id;
         if($order = Order::where('order_id','=',$order_id)->first()){
             //只有是未接单状态的才可以修改
             if($order->status==1){
-                $order->statua = 2;
-                $order->deverer_id = $deliverer_id;
+                $order->status = 2;
+                $order->deliverer_id = $deliverer_id;
                 if($order->save()) {
                     return self::setResponse(null, 200, 0);
                 }else{
@@ -153,6 +179,15 @@ class OrderController extends Controller
         }
     }
 
+    //获取所有未接单
+    public function getUnReceivedOrder(Request $request){
+        $start = $request->route('start');
+        $limit = $request->route('limit');
+        $unReceivedOrder = Order::join('addresses',function ($join) {
+                    $join->on('orders.address_id', '=', 'addresses.address_id');
+                })->select('order_id','express_id','addresses.province','addresses.city','addresses.town','addresses.address_detail','note','order_time')->orderBy('order_time','desc')->offset($start)->limit($limit)->get();
+        return self::setResponse($unReceivedOrder, 200, 0);
+    }
 
 }
 

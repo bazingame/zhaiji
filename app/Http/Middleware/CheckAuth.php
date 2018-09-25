@@ -16,9 +16,10 @@ class CheckAuth
      */
     public function handle($request, Closure $next)
     {
+        //检查是否有authorization头
         $header = $request->headers->all();
         if(!isset($header['authorization'])||$header['authorization']==''){
-            return Controller::setResponse($header,400,-4023);
+            return Controller::setResponse(null,400,-4023);
         }
         return $next($request);
     }

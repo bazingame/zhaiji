@@ -62,6 +62,8 @@ Route::group(['prefix'=>'address'],function (){
 
 //快递员相关
 Route::group(['prefix'=>'deliverer'],function (){
+    //获取快递可接单列表
+    Route::get('/order/{start}/{limit}',['middleware'=>'user_auth','uses'=>'OrderController@getUnReceivedOrder']);
     //添加快递员
     Route::post('/','DelivererController@addDeliverer');
     //修改信息
@@ -69,6 +71,6 @@ Route::group(['prefix'=>'deliverer'],function (){
     //删除快递员
     Route::delete('/{deliverer_id}','DelivererController@deleteDeliverer');
     //接单
-    Route::patch('/receive/{order_id}','OrderController@cancelOrder');
+    Route::patch('/receive/{order_id}','OrderController@receiveOrder');
 });
 

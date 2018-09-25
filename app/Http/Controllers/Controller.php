@@ -66,6 +66,9 @@ class Controller extends BaseController
             -4025 => 'order_id参数错误',
             -4026 => '不可确认状态',
             -4027 => '不可接单状态',
+            -4028 => '不可取消状态',
+            -4029 => '不可评价状态',
+            -4030 => '此账户不可接单',
 
         ];
         return $msgForCode[$errcode];
