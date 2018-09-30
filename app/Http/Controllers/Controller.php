@@ -13,6 +13,11 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public static function __echo($data,$status=200){
+        $response = new Response($data);
+        return $response->setStatusCode($status);
+    }
+
     public static function setResponse($data, $status, $errcode)
     {
         $body = array(
@@ -75,6 +80,7 @@ class Controller extends BaseController
             -4034 => '系统繁忙，此时请开发者稍候再试',
             -4035 => '未知错误',
             -4036 => 'code参数错误',
+            -4037 => 'code已被使用',
 
         ];
         return $msgForCode[$errcode];
@@ -95,6 +101,4 @@ class Controller extends BaseController
         $header = $request->headers->all();
         return decrypt($header['authorization'][0]);
     }
-
-
 }

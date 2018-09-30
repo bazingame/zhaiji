@@ -53,13 +53,17 @@ class LoginController extends Controller
         $res = curl_exec($ch);
         curl_close($ch);
         $resArr = json_decode($res,true);
-        if($resArr['errcode']==0){
-            return self::setResponse(array('openid'=>$resArr['openid'],'session_key'=>$resArr['session_key'],'unionid'=>$resArr['unionid']),200,0);
-        }else if($resArr['errcode']=='40029'){
+//        return self::__echo($resArr);
+
+        if(isset($resArr['openid'])){
+            return self::setResponse(array('openid'=>$resArr['openid'],'session_key'=>$resArr['session_key']),200,0);
+        }else if(isset($resArr['errcode'])&&$resArr['errcode']=='40029'){
             return self::setResponse(null,400,-4032);
-        }else if($resArr['errcode']=='45011'){
+        }else if(isset($resArr['errcode'])&&$resArr['errcode']=='45011'){
             return self::setResponse(null,400,-4033);
-        }else if($resArr['errcode']=='-1'){
+        }else if(isset($resArr['errcode'])&&$resArr['errcode']=='40163'){
+            return self::setResponse(null,400,-4037);
+        }else if(isset($resArr['errcode'])&&$resArr['errcode']=='-1'){
             return self::setResponse(null,500,-4034);
         }else{
             return self::setResponse(null,500,-4035);
