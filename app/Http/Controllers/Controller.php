@@ -70,6 +70,11 @@ class Controller extends BaseController
             -4029 => '不可评价状态',
             -4030 => '此账户不可接单',
             -4031 => 'money参数错误',
+            -4032 => 'code无效',
+            -4033 => '频率限制，每个用户每分钟100次',
+            -4034 => '系统繁忙，此时请开发者稍候再试',
+            -4035 => '未知错误',
+            -4036 => 'code参数错误',
 
         ];
         return $msgForCode[$errcode];
@@ -90,5 +95,6 @@ class Controller extends BaseController
         $header = $request->headers->all();
         return decrypt($header['authorization'][0]);
     }
+
 
 }

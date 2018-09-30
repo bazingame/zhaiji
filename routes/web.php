@@ -12,12 +12,14 @@
 */
 
 
-Route::get('/', function () {
-});
+//Route::get('/', function () {
+//});
 
 Route::get('/test',function(){
     return 'test fine!';
 });
+//换取用户唯一标识 OpenID
+Route::post('code','LoginController@getOpenID');
 
 //登录
 Route::post('login',"LoginController@login");

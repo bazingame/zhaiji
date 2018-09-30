@@ -36,4 +36,33 @@ class LoginController extends Controller
             return self::setResponse(null,200,-4002);
         }
     }
+
+    public function getOpenId(Request $request){
+        $AppID = 'wxc7e8bfd6875e51ae';
+        $AppSecret = '79ae9c82ee6b20309109b4c93505f352';
+        $check = $this->checkParam($request,array('code'),array('-4036'));
+        if(!$check[0]){
+            return self::setResponse($check[1],400,$check[1]);
+        }
+        $code = $request->code;
+        $code2SessionUrl = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$AppID.'&secret='.$AppSecret.'&js_code='.$code.'&grant_type=authorization_code';
+        $ch = curl_init();
+        curl_setopt($ch,CURLOPT_URL,$code2SessionUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        $res = curl_exec($ch);
+        curl_close($ch);
+        $resArr = json_decode($res,true);
+        if($resArr['errcode']==0){
+            return self::setResponse(array('openid'=>$resArr['openid'],'session_key'=>$resArr['session_key'],'unionid'=>$resArr['unionid']),200,0);
+        }else if($resArr['errcode']=='40029'){
+            return self::setResponse(null,400,-4032);
+        }else if($resArr['errcode']=='45011'){
+            return self::setResponse(null,400,-4033);
+        }else if($resArr['errcode']=='-1'){
+            return self::setResponse(null,500,-4034);
+        }else{
+            return self::setResponse(null,500,-4035);
+        }
+    }
 }
