@@ -1,3 +1,2 @@
 <?php
-//$data = openssl_encrypt($input,'des-ede3',$key,0);
-//phpinfo();
+echo strtotime('2018-09-30 20:41:19');

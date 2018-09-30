@@ -21,6 +21,12 @@ Route::get('/test',function(){
 //换取用户唯一标识 OpenID
 Route::post('code','LoginController@getOpenID');
 
+//验证码
+Route::group(['prefix'=>'msg'],function(){
+   Route::post('/send','MsgController@sendVerifiedCode');
+   Route::post('/verify','MsgController@verifyVerifiedCode');
+});
+
 //登录
 Route::post('login',"LoginController@login");
 
