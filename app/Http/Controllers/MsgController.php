@@ -11,9 +11,17 @@ class MsgController extends Controller
 {
     private $appid = '1400145345';
     private $appkey = 'dac289a95435448bccd157f738cc4945';
-    private $templateId = 1234;
-    private $smsSign = '宅集送';
-
+    private $templateId = 200858;
+    private $smsSign = '青木信息服务部';
+    private $smsErrArr = array('1015'=>'-4044',//手机号在黑名单库
+                                '1016'=>'-4045',//手机号格式错误
+                                '1022'=>'-4046',//业务短信日下发条数超过设定的上限
+                                '1023'=>'-4046',//业务短信日下发条数超过设定的上限
+                                '1024'=>'-4046',//业务短信日下发条数超过设定的上限
+                                '1025'=>'-4046',//业务短信日下发条数超过设定的上限
+                                '1026'=>'-4046',//业务短信日下发条数超过设定的上限
+                                '1029'=>'-4047'//营销短信发送时间限制
+                                );
 
     //微信无法使用cookie，所以这里使用数据库进行存储
     public function sendVerifiedCode(Request $request){
@@ -21,7 +29,7 @@ class MsgController extends Controller
         if(!$check[0]){
             return self::setResponse($check[1],400,$check[1]);
         }
-        $phone = $request->phone;
+        $phone = array($request->phone);
         $open_id = $request->open_id;
         $requestTime = time();
         $code = rand(100000,999999);
@@ -39,22 +47,33 @@ class MsgController extends Controller
             $result = $ssender->sendWithParam("86", $phone[0], $this->templateId,
                 $params, $this->smsSign, "", "");  // 签名参数未提供或者为空时，会使用默认签名发送短信
             $rsp = json_decode($result,true);
-//            return  self::__echo($rsp);
+            /*{   返回数据
+                "result": 0,
+                "errmsg": "OK",
+                "ext": "",
+                "sid": "2019:-6856560551571033852",
+                "fee": 2
+            }*/
 
-            if(TRUE){
+            //发送成功
+            if($rsp['result']==0){
                 $msg = new Msg();
-                $msg->phone = $phone;
+                $msg->phone = $phone[0];
                 $msg->code = $code;
                 $msg->created_at = $requestTime;
-                $msg->openid = $open_id;
+                $msg->open_id = $open_id;
+                $msg->status = 0;
                 if($msg->save()){
-                    return self::setResponse(null,200,0);
+                    return self::setResponse(array('captcha'=>$code),200,0);
                 }else{
-                    return self::setResponse(null,500,0);
+                    //短信记录失败
+                    return self::setResponse(null,500,-4044);
                 }
             }else{
-                //TODO
-                return self::setResponse(null,400,0);
+                //短信发送失败 具体值
+                $msgErrCode = $rsp['result'];
+                $errcode = $this->smsErrArr[$msgErrCode];
+                return self::setResponse(null,400,$errcode);
             }
         } catch(\Exception $e) {
             return self::setResponse(null,500,-4038);
@@ -72,7 +91,7 @@ class MsgController extends Controller
 
         if($record = Msg::where('open_id','=',$open_id)->where('phone','=',$phone)->orderBy('created_at','DESC')->first()){
             $oldTime = strtotime($record->created_at);
-            if(strtotime(now()) > $oldTime + 60)
+            if(strtotime(now()) > $oldTime + 180)//三分钟过期
                 return self::setResponse(null,400,-4041);
             if($code==$record->code){
                 return self::setResponse(null,200,0);

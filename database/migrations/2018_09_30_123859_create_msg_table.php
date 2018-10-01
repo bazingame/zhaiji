@@ -18,6 +18,7 @@ class CreateMsgTable extends Migration
             $table->string('open_id');
             $table->string('code');
             $table->string('phone');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

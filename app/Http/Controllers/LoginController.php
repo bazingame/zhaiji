@@ -53,7 +53,6 @@ class LoginController extends Controller
         $res = curl_exec($ch);
         curl_close($ch);
         $resArr = json_decode($res,true);
-//        return self::__echo($resArr);
 
         if(isset($resArr['openid'])){
             return self::setResponse(array('openid'=>$resArr['openid'],'session_key'=>$resArr['session_key']),200,0);
