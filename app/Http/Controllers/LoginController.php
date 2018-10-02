@@ -14,7 +14,7 @@ use phpDocumentor\Reflection\Types\Null_;
 class LoginController extends Controller
 {
 
-    public function login(Request $request){
+    public static function login(Request $request){
         if(!$request->has('open_id')||$request->open_id==''){
            return  self::setResponse(null,400,-4007);
         }

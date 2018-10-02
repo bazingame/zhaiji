@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Msg;
+use App\Models\User;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Self_;
 use Qcloud\Sms\SmsSingleSender;
@@ -64,7 +65,7 @@ class MsgController extends Controller
                 $msg->open_id = $open_id;
                 $msg->status = 0;
                 if($msg->save()){
-                    return self::setResponse(array('captcha'=>$code),200,0);
+                    return self::setResponse(null,200,0);
                 }else{
                     //短信记录失败
                     return self::setResponse(null,500,-4044);
@@ -94,7 +95,13 @@ class MsgController extends Controller
             if(strtotime(now()) > $oldTime + 180)//三分钟过期
                 return self::setResponse(null,400,-4041);
             if($code==$record->code){
-                return self::setResponse(null,200,0);
+                //顺便注册登录该账户
+                //注册
+                $addRes = UserController::addUSer($request);
+                //登录
+                $loginRes = LoginController::login($request);
+
+                return self::setResponse($addRes,200,0);
             }else{
                 return self::setResponse(null,400,-4042);
             }

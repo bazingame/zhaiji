@@ -1,17 +1,51 @@
-GET_OPEN_ID: "/code",//POST
-LOGIN: "/login",//POST
-GET_CAPTCHA: "/msg/send",//POST
-VERIFY_CAPTCHA: "/msg/verify", //POST
-ADD_USER: "/user",//POST
-REVISE_USER: "/user",//PATCH
-GET_ONES_ORDER_LIST: "/order",//GET
-GET_ONES_ORDER_DETAIL: "/order/{order_id}",//GET
-ADD_ORDER: "/order",//POST
-CANCEL_ORDER: "/order/cancel/{order_id}",//PATCH
-CONFIRM_ORDER: "/order/confirm/{order_id}",//PATCH
-MARK_ORDER: "/order/mark/{order_id}",//PATCH
-ADD_ADDRESS: "/address/",//POST
-DELETE_ADDRESS: "/address/{address_id}",//DELETE
-REVISE_ADDRESS: "/address/{address_id}",//PATCH
-GET_ORDER_CAN_GET_LIST: "/order/{start}/{limit}",//GET
-RECEIVE_ORDER: "/deliverer/receive/{order_id}"//POST
+loginsubmit: function(e) {
+    var that = this;
+    var captcha = that.data.captcha;
+    wx.login({
+      success:function(res){
+        console.log(res);
+        wx.request({
+          url: 'https://zhaiji.hammerfood.cn/code',
+          method:'POST',
+          data:{
+            code:res.code
+          },
+          success:function (res) {
+            console.log(res);
+            var head;
+            var open_id = res.data.data.openid;
+            wx.getUserInfo({
+              lang: 'zh-CN',
+              success: function (res) {
+                console.log(res);
+                head = res.userInfo.avatarUrl;
+                console.log(head);
+                wx.request({
+                  url: 'https://zhaiji.hammerfood.cn/login',
+                  method:'POST',
+                  data: {
+                    open_id: open_id,
+                    phone: phone,
+                    headimg_url: head
+                  },
+                  success: function (res) {
+                    console.log(res);
+                    wx.setStorage({
+                      key: 'phone',
+                      data: phone
+                    }),
+                    wx.switchTab({
+                      url: '../service/service',
+                    })
+                  },
+                  fail: function (e) {
+                    console.log(e);
+                  }
+                })
+
+              }
+            })
+          }
+        })
+      },
+    })

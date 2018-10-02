@@ -9,8 +9,13 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     //注册
-    public function addUser(Request $request)
+    public static function addUser(Request $request)
     {
+        /*暂时不收集用户头像*/
+        /*head_img为随机*/
+        /*暂时不收集用户头像*/
+        $request->head_img = env("APP_URL")."/storage/images/package1.png";
+
         if (!$request->has("open_id") || !$request->has("phone") ||!$request->has("headimg_url")) {
             return self::setResponse(null,400,-4001);
         }
