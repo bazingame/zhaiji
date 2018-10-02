@@ -55,7 +55,7 @@ class LoginController extends Controller
         $resArr = json_decode($res,true);
 
         if(isset($resArr['openid'])){
-            return self::setResponse(array('openid'=>$resArr['openid'],'session_key'=>$resArr['session_key']),200,0);
+            return self::setResponse(array('open_id'=>$resArr['openid']),200,0);
         }else if(isset($resArr['errcode'])&&$resArr['errcode']=='40029'){
             return self::setResponse(null,400,-4032);
         }else if(isset($resArr['errcode'])&&$resArr['errcode']=='45011'){
