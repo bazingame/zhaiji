@@ -1,51 +1,16 @@
-loginsubmit: function(e) {
-    var that = this;
-    var captcha = that.data.captcha;
-    wx.login({
-      success:function(res){
-        console.log(res);
-        wx.request({
-          url: 'https://zhaiji.hammerfood.cn/code',
-          method:'POST',
-          data:{
-            code:res.code
-          },
-          success:function (res) {
-            console.log(res);
-            var head;
-            var open_id = res.data.data.openid;
-            wx.getUserInfo({
-              lang: 'zh-CN',
-              success: function (res) {
-                console.log(res);
-                head = res.userInfo.avatarUrl;
-                console.log(head);
-                wx.request({
-                  url: 'https://zhaiji.hammerfood.cn/login',
-                  method:'POST',
-                  data: {
-                    open_id: open_id,
-                    phone: phone,
-                    headimg_url: head
-                  },
-                  success: function (res) {
-                    console.log(res);
-                    wx.setStorage({
-                      key: 'phone',
-                      data: phone
-                    }),
-                    wx.switchTab({
-                      url: '../service/service',
-                    })
-                  },
-                  fail: function (e) {
-                    console.log(e);
-                  }
-                })
-
-              }
-            })
-          }
-        })
-      },
-    })
+ [
+{ 'express_id': 'Express_zhongtong', 'name': '中通' },
+{ 'express_id': 'Express_yuantong', 'name': '圆通' },
+{ 'express_id': 'Express_shentong', 'name': '申通' },
+{ 'express_id': 'Express_huitong', 'name': '汇通' },
+{ 'express_id': 'Express_shunfeng', 'name': '顺丰' },
+{ 'express_id': 'Express_baishi', 'name': '百世' },
+{ 'express_id': 'Express_yunda', 'name': '韵达' },
+{ 'express_id': 'Express_jingdong', 'name': '京东' },
+{ 'express_id': 'Express_youzheng', 'name': '邮政' },
+{ 'express_id': 'Express_tiantian', 'name': '天天' },
+{ 'express_id': 'Express_yousu', 'name': '优速' },
+{ 'express_id': 'Express_anneng', 'name':'安能'}
+{ 'express_id': 'Express_ems', 'name': 'EMS' },
+{ 'express_id': 'Express_weipinhui', 'name': '唯品会' },
+]

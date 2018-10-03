@@ -101,7 +101,7 @@ class MsgController extends Controller
                 //登录
                 $loginRes = LoginController::login($request);
 
-                return self::setResponse($addRes,200,0);
+                return self::setResponse($loginRes['original'],200,0);
             }else{
                 return self::setResponse(null,400,-4042);
             }

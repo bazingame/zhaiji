@@ -82,3 +82,7 @@ Route::group(['prefix'=>'deliverer'],function (){
     Route::post('/receive/{order_id}',['middleware'=>'user_auth','uses'=>'OrderController@receiveOrder']);
 });
 
+Route::group(['prefix'=>'map'],function (){
+   Route::post('/getcoder','MapController@getCoder');
+   Route::post('/search','MapController@search');
+});
