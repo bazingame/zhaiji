@@ -83,6 +83,6 @@ Route::group(['prefix'=>'deliverer'],function (){
 });
 
 Route::group(['prefix'=>'map'],function (){
-   Route::post('/getcoder','MapController@getCoder');
-   Route::post('/search','MapController@search');
+   Route::post('/getcoder/{latitude}/{longitude}','MapController@getCoder');
+   Route::post('/search/{text}','MapController@search');
 });

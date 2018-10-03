@@ -14,13 +14,22 @@ class MapController extends Controller
         $res = file_get_contents($getCoderUrl);
         $resArr = json_decode($res,true);
         if($resArr['status']==0){
-            return self::setResponse($res,200,0);
+            return self::setResponse($resArr['result'],200,0);
         }else{
             return self::setResponse(null,500,-4048);
         }
     }
 
-//    public function search(Request $request){
-//    }
+    public function search(Request $request){
+        $text = $request->route('text');
+        $searchUrl = 'http://api.map.baidu.com/place/v2/search?query='.$text.'&page_size=20&page_num=0&scope=2&region=湘潭&output=json&ak='.$this->AK;
+        $res = file_get_contents($searchUrl);
+        $resArr = json_decode($res,true);
+        if($resArr['status']==0){
+            return self::setResponse($resArr['result'],200,0);
+        }else{
+            return self::setResponse(null,500,-4049);
+        }
+    }
 
 }

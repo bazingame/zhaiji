@@ -92,6 +92,7 @@ class Controller extends BaseController
             -4046 => '短信发送频繁',
             -4047 => '发送时间限制',
             -4048 => '获取地点失败',
+            -4049 => '搜索地点失败',
 
         ];
         return $msgForCode[$errcode];
