@@ -41,7 +41,9 @@ class AddressController extends Controller
         $request->user_id = $this->getUserId($request);
         if($address = Address::where('address_id','=',$request->address_id)->where('user_id','=',$request->user_id)->first()){
             $address->delete();
-            return self::setResponse(null,200,0);
+            //删除后返回新的地址列表数据
+            $addressNew = Address::where('user_id','=',$request->user_id)->select('address_id','name','address','address_detail','phone')->get();
+            return self::setResponse($addressNew,200,0);
         }else{
             return self::setResponse(null,400,-4021);
         }
