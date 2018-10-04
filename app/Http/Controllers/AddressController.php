@@ -12,7 +12,7 @@ class AddressController extends Controller
     //添加地址
     public function addAddress(Request $request){
         $request->user_id = $this->getUserId($request);
-        $check = $this->checkParam($request,array('province','city','town','address_detail','phone'),array('-4016','-4017','-4018','-4019','-4015'));
+        $check = $this->checkParam($request,array('name','address','address_detail','phone'),array('-4017','-4018','-4019','-4015'));
         if(!$check[0]){
             return self::setResponse($check[1],400,$check[1]);
         }
@@ -23,9 +23,8 @@ class AddressController extends Controller
         $address = new Address();
         $address->address_id = "A_".sprintf("%08d",$address_count+1);
         $address->user_id = $request->user_id;
-        $address->province = $request->province;
-        $address->city = $request->city;
-        $address->town = $request->town;
+        $address->name = $request->name;
+        $address->address = $request->address;
         $address->address_detail = $request->address_detail;
         $address->phone = $request->phone;
         //TODO 检查phone正确性
@@ -51,13 +50,11 @@ class AddressController extends Controller
     public function reviseAddress(Request $request){
         $request->user_id = $this->getUserId($request);
         if($address = Address::where('address_id','=',$request->address_id)->where('user_id','=',$request->user_id)->first()){
-            if($request->has('province'))
-                $address->province = $request->province;
-            if($request->has('city')){
-                $address->city = $request->city;
+            if($request->has('name')){
+                $address->name = $request->name;
             }
-            if($request->has('town')){
-                $address->town = $request->town;
+            if($request->has('address')){
+                $address->address = $request->address;
             }
             if($request->has('address_detail')){
                 $address->address_detail = $request->address_detail;

@@ -26,7 +26,7 @@ class MapController extends Controller
         $res = file_get_contents($searchUrl);
         $resArr = json_decode($res,true);
         if($resArr['status']==0){
-            return self::setResponse($resArr['result'],200,0);
+            return self::setResponse($resArr['results'],200,0);
         }else{
             return self::setResponse(null,500,-4049);
         }
