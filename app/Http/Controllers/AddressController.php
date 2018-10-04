@@ -31,7 +31,10 @@ class AddressController extends Controller
         if($address->save()){
             $statistics->address_count++;
             $statistics->save();
-            return self::setResponse(null,200,0);
+
+            //添加后返回新的地址列表数据
+            $addressNew = Address::where('user_id','=',$request->user_id)->select('address_id','name','address','address_detail','phone')->get();
+            return self::setResponse($addressNew,200,0);
         }else{
             return self::setResponse(null,400,-4020);
         }
