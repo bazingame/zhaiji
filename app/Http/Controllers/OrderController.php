@@ -13,19 +13,17 @@ use phpDocumentor\Reflection\Types\Self_;
 class OrderController extends Controller
 {
     private $statusArr = array('1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消');
-    private $markStatusArr = array('0'=>'未评价','1'=>'已评价');
 
     //获取订单列表
     public function getOrder(Request $request){
         $user_id = $this->getUserId($request);
         if($orderList = Order::join('addresses',function ($join) {
             $join->on('orders.address_id', '=', 'addresses.address_id');
-            })->select('order_id','express_id','order_time','deliverer_id','status','money','express_id','mark_status','addresses.name','addresses.address','addresses.address_detail','addresses.phone')->where('orders.user_id','=',$user_id)->get()){
+            })->select('order_id','express_id','order_time','deliverer_id','status','money','express_id','package_id','mark_status','addresses.name','addresses.address','addresses.address_detail','addresses.phone')->where('orders.user_id','=',$user_id)->get()){
             foreach ($orderList as $k => $v){
                 $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
                 unset($v['express_id']);
                 $v['status'] = $this->statusArr[$v['status']];
-                $v['mark_status'] = $this->markStatusArr[$v['mark_status']];
             }
             return self::setResponse($orderList,200,0);
         }
