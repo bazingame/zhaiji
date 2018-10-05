@@ -35,7 +35,7 @@ Route::group(['prefix'=>'user'],function (){
     //注册
     Route::post('/','UserController@addUser');
     //修改信息
-    Route::patch('/',['middleware'=>'user_auth','uses'=>'UserController@reviseUser']);
+    Route::put('/',['middleware'=>'user_auth','uses'=>'UserController@reviseUser']);
     //删除用户
     Route::delete('/{user_id}','UserController@deleteUser');
 });
@@ -49,11 +49,11 @@ Route::group(['prefix'=>'order','middleware'=>'user_auth'],function(){
     //下单
     Route::post('/','OrderController@addOrder');
     //申请取消订单
-    Route::patch('/apply-cancel/{order_id}','OrderController@applyCancelOrder');
+    Route::put('/apply-cancel/{order_id}','OrderController@applyCancelOrder');
     //确认订单
-    Route::patch('/confirm/{order_id}','OrderController@confirmOrder');
+    Route::put('/confirm/{order_id}','OrderController@confirmOrder');
     //评价订单
-    Route::patch('/mark/{order_id}','OrderController@markOrder');
+    Route::put('/mark/{order_id}','OrderController@markOrder');
 });
 
 
@@ -64,7 +64,7 @@ Route::group(['prefix'=>'address','middleware'=>'user_auth'],function (){
     //删除地址
     Route::delete('/{address_id}',"AddressController@deleteAddress");
     //修改地址
-    Route::patch('/{address_id}',"AddressController@reviseAddress");
+    Route::put('/{address_id}',"AddressController@reviseAddress");
 });
 
 
@@ -75,15 +75,15 @@ Route::group(['prefix'=>'deliverer'],function (){
     //添加快递员
     Route::post('/','DelivererController@addDeliverer');
     //修改信息
-    Route::patch('/{deliverer_id}','DelivererController@reviseDeliverer');
+    Route::put('/{deliverer_id}','DelivererController@reviseDeliverer');
     //删除快递员
     Route::delete('/{deliverer_id}','DelivererController@deleteDeliverer');
     //接单
     Route::post('/receive/{order_id}',['middleware'=>'user_auth','uses'=>'OrderController@receiveOrder']);
     //取消订单
-    Route::patch('/cancel/{order_id}','OrderController@cancelOrder');
+    Route::put('/cancel/{order_id}','OrderController@cancelOrder');
     //拒绝取消订单
-    Route::patch('/refuse-cancel/{order_id}','OrderController@refuseCancelOrder');
+    Route::put('/refuse-cancel/{order_id}','OrderController@refuseCancelOrder');
 });
 
 Route::group(['prefix'=>'map'],function (){
