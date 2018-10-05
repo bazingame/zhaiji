@@ -84,8 +84,8 @@ Route::group(['prefix'=>'deliverer'],function (){
     Route::put('/cancel/{order_id}','OrderController@cancelOrder');
     //拒绝取消订单
     Route::put('/refuse-cancel/{order_id}','OrderController@refuseCancelOrder');
-    //获取配送员电话
-    Route::get('/phone/{deliverer_id}','DelivererController@getDelivererPhone');
+    //获取配送员信息
+    Route::get('/info/{deliverer_id}','DelivererController@getDelivererInfo');
 });
 
 Route::group(['prefix'=>'map'],function (){
