@@ -4,7 +4,7 @@
 > ## 登录
 ### 1.获取OpenID
 HTTP: **`POST`**
-URL: `https://zhaiji.hammerfood.cn/code`
+URL: `{host}/code`
 
 参数说明:
 |参数名|类型|描述|示例|
@@ -32,7 +32,7 @@ URL: `https://zhaiji.hammerfood.cn/code`
 
 ### 2.登录
 HTTP: **`POST`**
-URL: `https://zhaiji.hammerfood.cn/login`
+URL: `{host}/login`
 
 参数说明:
 |参数名|类型|描述|示例|
@@ -77,7 +77,7 @@ URL: `https://zhaiji.hammerfood.cn/login`
 
 ### 1.获取验证码
 HTTP: **`POST`**
-URL: `https://zhaiji.hammerfood.cn/msg/send`
+URL: `{host}/msg/send`
 参数说明:
 |参数名|类型|描述|示例|
 |----|----|---|----|
@@ -102,7 +102,7 @@ URL: `https://zhaiji.hammerfood.cn/msg/send`
 ### 2.验证验证码
 
 HTTP: **`POST`**
-URL: `https://zhaiji.hammerfood.cn/msg/verify`
+URL: `{host}/msg/verify`
 参数说明:
 |参数名|类型|描述|示例|
 |----|----|---|----|
@@ -127,7 +127,7 @@ URL: `https://zhaiji.hammerfood.cn/msg/verify`
 > 初次登录，验证电话号码无误后进行注册
 
 HTTP: **`POST`**
-URL: `https://zhaiji.hammerfood.cn/user`
+URL: `{host}/user`
 参数说明:
 |参数名|类型|描述|示例|
 |----|----|---|----|
@@ -150,7 +150,7 @@ URL: `https://zhaiji.hammerfood.cn/user`
 
 ### 4.修改信息
 HTTP: **`put`**
-URL: `https://zhaiji.hammerfood.cn/user`
+URL: `{host}/user`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -175,7 +175,7 @@ HTTP头信息:`Authorization:authorization`
 > ## 订单相关
 ### 1.获取本人订单列表
 HTTP: **`GET`**
-URL: `https://zhaiji.hammerfood.cn/order`
+URL: `{host}/order`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -216,14 +216,14 @@ HTTP头信息:`Authorization:authorization`
             "address_detail": "湘潭大学北苑1栋",
             "phone": "186709999999",
             "express": "中通"
-        },
+        }
     ]
 }
 ```
 ### 2.获取订单信息
 
 HTTP: **`GET`**
-URL: `https://zhaiji.hammerfood.cn/order/{order_id}`
+URL: `{host}/order/{order_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -291,7 +291,7 @@ HTTP头信息:`Authorization:authorization`
 ### 3.下单
 
 HTTP: **`POST`**
-URL: `https://zhaiji.hammerfood.cn/order`
+URL: `{host}/order`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -321,7 +321,7 @@ HTTP头信息:`Authorization:authorization`
 
 
 HTTP: **`put`**
-URL: `https://zhaiji.hammerfood.cn/order/apply-cancel/{order_id}`
+URL: `{host}/order/apply-cancel/{order_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -349,7 +349,7 @@ HTTP头信息:`Authorization:authorization`
 ### 5.确认完成订单
 
 HTTP: **`put`**
-URL: `https://zhaiji.hammerfood.cn/order/confirm/{order_id}`
+URL: `{host}/order/confirm/{order_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -370,10 +370,10 @@ HTTP头信息:`Authorization:authorization`
 }
 ```
 
-### 6.评价订单
+### 6.评价订单 
 
 HTTP: **`put`**
-URL: `https://zhaiji.hammerfood.cn/order/mark/{order_id}`
+URL: `{host}/order/mark/{order_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -395,11 +395,11 @@ HTTP头信息:`Authorization:authorization`
 ```
 
 ---
-> ##  地址相关
+> ##  地址相关 
 ### 1.添加地址
 
 HTTP: **`POST`**
-URL: `https://zhaiji.hammerfood.cn/address/`
+URL: `{host}/address/`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -423,10 +423,10 @@ HTTP头信息:`Authorization:authorization`
 }
 ```
 
-### 2.删除地址
+### 2.删除地址 
 
 HTTP: **`DELETE`**
-URL: `https://zhaiji.hammerfood.cn/address/{address_id}`
+URL: `{host}/address/{address_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -450,7 +450,7 @@ HTTP头信息:`Authorization:authorization`
 ### 3.修改地址
 
 HTTP: **`put`**
-URL: `https://zhaiji.hammerfood.cn/address/{address_id}`
+URL: `{host}/address/{address_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -480,7 +480,7 @@ HTTP头信息:`Authorization:authorization`
 ### 1.获取快递可接单列表
 
 HTTP: **`GET`**
-URL: `https://zhaiji.hammerfood.cn/order/{start}/{limit}`
+URL: `{host}/order/{start}/{limit}`
 HTTP头信息:`Authorization:authorization`
 
 `start`为数据起始点,`limit`为数据长度
@@ -532,7 +532,7 @@ HTTP头信息:`Authorization:authorization`
 ### 2.接单
 
 HTTP: **`POST`**
-URL: `https://zhaiji.hammerfood.cn/deliverer/receive/{order_id}`
+URL: `{host}/deliverer/receive/{order_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -557,7 +557,7 @@ HTTP头信息:`Authorization:authorization`
 
 
 HTTP: **`put`**
-URL: `https://zhaiji.hammerfood.cn/deliverer/cancel/{order_id}`
+URL: `{host}/deliverer/cancel/{order_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -586,7 +586,7 @@ HTTP头信息:`Authorization:authorization`
 
 
 HTTP: **`put`**
-URL: `https://zhaiji.hammerfood.cn/deliverer/refuse-cancel/{order_id}`
+URL: `{host}/deliverer/refuse-cancel/{order_id}`
 HTTP头信息:`Authorization:authorization`
 
 参数说明:
@@ -611,6 +611,33 @@ HTTP头信息:`Authorization:authorization`
 }
 ```
 
+### 6.获取电话
+
+
+HTTP: **`put`**
+URL: `{host}/deliverer/phone/{deliverer_id}`
+HTTP头信息:`Authorization:authorization`
+
+参数说明:
+|参数名|类型|描述|示例|
+|----|----|---|----|
+|**send**|||
+|无|无|无|无|
+|**response**|||
+|phone|String|电话号|18670999999|
+
+调用成功的返回值示例：
+```json
+{
+    "errcode": 0,
+    "status": 200,
+    "errmsg": "请求成功",
+    "data": {
+        "phone": "18670999799",
+    }
+}
+```
+
 ---
 > ##  错误码
 |错误码|错误详情|
@@ -631,7 +658,7 @@ HTTP头信息:`Authorization:authorization`
 |-4013|package_size参数错误|
 |-4014|status参数错误|
 |-4015|phone参数错误|
-|-4016|province参数错误|
+|-4016|deliverer_id参数错误|
 |-4017|name参数错误|
 |-4018|address参数错误|
 |-4019|address_detail参数错误|
@@ -646,12 +673,12 @@ HTTP头信息:`Authorization:authorization`
 |-4028|不可取消状态|
 |-4029|不可评价状态|
 |-4030|此账户不可接单|
-|-4031|money参数错误|
-|-4032|code无效|
+|-4031|money参数错误| 
+|-4032|code无效| 
 |-4033|频率限制，每个用户每分钟100次|
-|-4034|系统繁忙，此时请开发者稍候再试|
-|-4035|未知错误|
-|-4036|code参数错误|
+|-4034|系统繁忙，此时请开发者稍候再试| 
+|-4035|未知错误| 
+|-4036|code参数错误| 
 |-4037|code已被使用|
 |-4038|短信发送失败|
 |-4039|一分钟内只可发送一次|

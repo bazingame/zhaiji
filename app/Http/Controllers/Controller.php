@@ -59,7 +59,7 @@ class Controller extends BaseController
             -4013 => 'package_size参数错误',
             -4014 => 'status参数错误',
             -4015 => 'phone参数错误',
-//            -4016 => 'province参数错误',
+            -4016 => 'deliverer_id参数错误',
             -4017 => 'name参数错误',
             -4018 => 'address参数错误',
             -4019 => 'address_detail参数错误',
@@ -96,6 +96,7 @@ class Controller extends BaseController
             -4050 => 'user鉴权失败',
             -4051 => '此账户不可操作',
             -4052 => '不可操作状态',
+//            -4053 => '不可操作状态',
 
         ];
         return $msgForCode[$errcode];
