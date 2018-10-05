@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Libs\AESMcrypt;
 use App\Models\Address;
+use App\Models\Deliverer;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -15,6 +16,7 @@ class LoginController extends Controller
 {
 
     public static function login(Request $request){
+        //TODO 用户判断
         if(!$request->has('open_id')||$request->open_id==''){
            return  self::setResponse(null,400,-4007);
         }
@@ -31,6 +33,12 @@ class LoginController extends Controller
                 'phone'=>$user->phone,
             );
            return self::setResponse($data,200,0);
+           //快递员
+        }elseif($deliverer = Deliverer::where('open_id','=',$open_id)->first()){
+            $data = array(
+                'authorization'=>encrypt($deliverer->deliverer_id),
+            );
+            return self::setResponse($data,200,0);
             //未注册
         }else{
             return self::setResponse(null,200,-4002);

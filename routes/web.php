@@ -48,8 +48,8 @@ Route::group(['prefix'=>'order','middleware'=>'user_auth'],function(){
     Route::get('/{order_id}','OrderController@getOneOrder');
     //下单
     Route::post('/','OrderController@addOrder');
-    //取消订单
-    Route::patch('/cancel/{order_id}','OrderController@cancelOrder');
+    //申请取消订单
+    Route::patch('/apply-cancel/{order_id}','OrderController@applyCancelOrder');
     //确认订单
     Route::patch('/confirm/{order_id}','OrderController@confirmOrder');
     //评价订单
@@ -80,6 +80,10 @@ Route::group(['prefix'=>'deliverer'],function (){
     Route::delete('/{deliverer_id}','DelivererController@deleteDeliverer');
     //接单
     Route::post('/receive/{order_id}',['middleware'=>'user_auth','uses'=>'OrderController@receiveOrder']);
+    //取消订单
+    Route::patch('/cancel/{order_id}','OrderController@cancelOrder');
+    //拒绝取消订单
+    Route::patch('/refuse-cancel/{order_id}','OrderController@refuseCancelOrder');
 });
 
 Route::group(['prefix'=>'map'],function (){

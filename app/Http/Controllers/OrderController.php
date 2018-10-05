@@ -12,7 +12,7 @@ use phpDocumentor\Reflection\Types\Self_;
 
 class OrderController extends Controller
 {
-    private $statusArr = array('1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消');
+    private $statusArr = array('1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败');
 
     //获取订单列表
     public function getOrder(Request $request){
@@ -90,24 +90,87 @@ class OrderController extends Controller
         }
 
     }
-
-    //取消订单
-    public function cancelOrder(Request $request){
+    //申请取消
+    public function applyCancelOrder(Request $request){
         $user_id = $this->getUserId($request);
         $order_id = $request->order_id;
         if($order = Order::where('order_id','=',$order_id)->where('user_id','=',$user_id)->first()){
             //只有状态为未接单、已接单才可以取消
-            //TODO 可取消状态
+            //状态未未接单直接取消，状态为已接单申请取消
+            //'1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败'
+
+            //直接取消
             if($order->status==1){
                 $order->status = 4;
                 $order->cancel_reason = $request->cancel_reason;
                 if($order->save()){
-                    return self::setResponse(null,200,0);
+                    return self::setResponse(array('status_code'=>'4','status'=>'已取消'),200,0);
+                }else{
+                    return self::setResponse(null,400,-4006);
+                }
+            //申请取消，待确认
+            }elseif($order->status==2){
+                $order->status = 5;
+                $order->cancel_reason = $request->cancel_reason;
+                if($order->save()){
+                    return self::setResponse(array('status_code'=>'5','status'=>'申请取消中'),200,0);
                 }else{
                     return self::setResponse(null,400,-4006);
                 }
             }else{
                 return self::setResponse(null,400,-4028);
+            }
+        }else{
+            return self::setResponse(null,400,-4025);
+        }
+    }
+
+    //取消订单(快递员操作)
+    public function cancelOrder(Request $request){
+        $deliverer_id = $this->getUserId($request);
+        if(substr($deliverer_id,0,1)!='D'){
+            return self::setResponse(null, 400, -4051);
+        }
+        $order_id = $request->order_id;
+        if($order = Order::where('order_id','=',$order_id)->where('deliverer_id','=',$deliverer_id)->first()){
+            //只有状态为申请取消中才可以取消
+            //'1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败'
+            //直接取消
+            if($order->status==5){
+                $order->status = 4;
+                if($order->save()){
+                    return self::setResponse(array('status_code'=>'4','status'=>'已取消'),200,0);
+                }else{
+                    return self::setResponse(null,400,-4006);
+                }
+            }else{
+                return self::setResponse(null,400,-4028);
+            }
+        }else{
+            return self::setResponse(null,400,-4025);
+        }
+    }
+
+    //拒绝取消订单(快递员操作)
+    public function refuseCancelOrder(Request $request){
+        $deliverer_id = $this->getUserId($request);
+        if(substr($deliverer_id,0,1)!='D'){
+            return self::setResponse(null, 400, -4051);
+        }
+        $order_id = $request->order_id;
+        if($order = Order::where('order_id','=',$order_id)->where('deliverer_id','=',$deliverer_id)->first()){
+            //只有状态为申请取消中才可以取消
+            //'1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败'
+            //直接取消
+            if($order->status==5){
+                $order->status = 6;
+                if($order->save()){
+                    return self::setResponse(array('status_code'=>'6','status'=>'已拒绝'),200,0);
+                }else{
+                    return self::setResponse(null,400,-4006);
+                }
+            }else{
+                return self::setResponse(null,400,-4052);
             }
         }else{
             return self::setResponse(null,400,-4025);

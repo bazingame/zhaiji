@@ -94,6 +94,8 @@ class Controller extends BaseController
             -4048 => '获取地点失败',
             -4049 => '搜索地点失败',
             -4050 => 'user鉴权失败',
+            -4051 => '此账户不可操作',
+            -4052 => '不可操作状态',
 
         ];
         return $msgForCode[$errcode];
