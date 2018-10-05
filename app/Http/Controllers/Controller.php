@@ -93,6 +93,7 @@ class Controller extends BaseController
             -4047 => '发送时间限制',
             -4048 => '获取地点失败',
             -4049 => '搜索地点失败',
+            -4050 => 'user鉴权失败',
 
         ];
         return $msgForCode[$errcode];
@@ -111,6 +112,11 @@ class Controller extends BaseController
     //获取user_id
     public function getUserId(\Illuminate\Http\Request  $request){
         $header = $request->headers->all();
-        return decrypt($header['authorization'][0]);
+        try{
+            $user_id = decrypt($header['authorization'][0]);
+        }catch (\Exception $e){
+            return null;
+        }
+        return $user_id;
     }
 }
