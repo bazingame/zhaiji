@@ -20,6 +20,7 @@ class CreateOrdersTable extends Migration
             $table->string('express_id');
             $table->string('package_id');
             $table->string('insurance');
+            $table->string('valuation')->nullable()->comment('估值');
             $table->string('money');
             $table->string('package_size');
             $table->string('status')->comment("1=>未接单,2=>已接单,3=>已完成,4=>已取消,5=>申请取消中,6=>取消失败");

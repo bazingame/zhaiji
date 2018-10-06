@@ -70,6 +70,8 @@ class OrderController extends Controller
         $order->express_id = $request->express_id;
         $order->package_id = $request->package_id;
         $order->insurance = $request->insurance;
+        $order->valuation = $request->valuation;
+        $order->note = $request->note;
         $order->money = $request->money;
         $order->package_size = $request->package_size;
         $order->status = 1;
