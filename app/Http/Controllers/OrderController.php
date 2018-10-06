@@ -36,16 +36,32 @@ class OrderController extends Controller
     public function getOneOrder(Request $request){
         $user_id = $this->getUserId($request);
         $order_id = $request->route('order_id');
-        if($orderDetail = Order::join('addresses',function ($join) {
-            $join->on('orders.address_id', '=', 'addresses.address_id');
+        //如果是配送员
+        if(substr($user_id,0,1)!='D'){
+            if($orderDetail = Order::join('addresses',function ($join) {
+                $join->on('orders.address_id', '=', 'addresses.address_id');
+            })->where('orders.deliverer_id','=',$user_id)->where('orders.order_id','=',$order_id)->first())
+            {
+                $orderDetail['express'] = Express::where('express_id','=',$orderDetail['express_id'])->select('name')->first()['name'];
+                unset($orderDetail['express_id']);
+                unset($orderDetail['user_id']);
+                $orderDetail['status'] = $this->statusArr[$orderDetail['status']];
+                return self::setResponse($orderDetail,200,0);
+            }
+        //如果是普通用户
+        }else{
+            if($orderDetail = Order::join('addresses',function ($join) {
+                $join->on('orders.address_id', '=', 'addresses.address_id');
             })->where('orders.user_id','=',$user_id)->where('orders.order_id','=',$order_id)->first())
-        {
-            $orderDetail['express'] = Express::where('express_id','=',$orderDetail['express_id'])->select('name')->first()['name'];
-            unset($orderDetail['express_id']);
-            unset($orderDetail['user_id']);
-            $orderDetail['status'] = $this->statusArr[$orderDetail['status']];
-            return self::setResponse($orderDetail,200,0);
+            {
+                $orderDetail['express'] = Express::where('express_id','=',$orderDetail['express_id'])->select('name')->first()['name'];
+                unset($orderDetail['express_id']);
+                unset($orderDetail['user_id']);
+                $orderDetail['status'] = $this->statusArr[$orderDetail['status']];
+                return self::setResponse($orderDetail,200,0);
+            }
         }
+
     }
 
     //下单
@@ -272,10 +288,11 @@ class OrderController extends Controller
         }
         $receivedOrder = Order::join('addresses',function ($join) {
             $join->on('orders.address_id', '=', 'addresses.address_id');
-        })->select('order_id','express_id','package_size','addresses.address','addresses.address_detail','note','order_time')->where('deliverer_id','=',$deliverer_id)->orderBy('order_time','desc')->get();
+        })->select('order_id','express_id','package_size','package_id','status','money','addresses.address','addresses.address_detail','note','order_time')->where('deliverer_id','=',$deliverer_id)->orderBy('order_time','desc')->get();
         foreach ($receivedOrder as $k => $v){
             $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
             unset($v['express_id']);
+            $v['status'] = $this->statusArr[$v['status']];
         }
         return self::setResponse($receivedOrder, 200, 0);
     }
