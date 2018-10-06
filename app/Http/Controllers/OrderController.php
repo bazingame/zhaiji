@@ -47,6 +47,7 @@ class OrderController extends Controller
             return self::setResponse($orderDetail,200,0);
         }
     }
+
     //下单
     public function addOrder(Request $request){
         $request->user_id = $this->getUserId($request);
@@ -92,6 +93,7 @@ class OrderController extends Controller
         }
 
     }
+
     //申请取消
     public function applyCancelOrder(Request $request){
         $user_id = $this->getUserId($request);
@@ -201,7 +203,6 @@ class OrderController extends Controller
         }
     }
 
-
     //评价订单
     public function markOrder(Request $request){
         $user_id = $this->getUserId($request);
@@ -255,12 +256,28 @@ class OrderController extends Controller
         $limit = $request->route('limit');
         $unReceivedOrder = Order::join('addresses',function ($join) {
                     $join->on('orders.address_id', '=', 'addresses.address_id');
-                })->select('order_id','express_id','package_size','addresses.address','addresses.address_detail','note','order_time')->orderBy('order_time','desc')->offset($start)->limit($limit)->get();
+                })->select('order_id','express_id','package_size','addresses.address','addresses.address_detail','note','order_time')->where('status','=','1')->orderBy('order_time','desc')->offset($start)->limit($limit)->get();
         foreach ($unReceivedOrder as $k => $v){
             $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
             unset($v['express_id']);
         }
         return self::setResponse($unReceivedOrder, 200, 0);
+    }
+
+    //获取所有自己接的单
+    public function getReceivedOrder(Request $request){
+        $deliverer_id = $this->getUserId($request);
+        if(substr($deliverer_id,0,1)!='D'){
+            return self::setResponse(null, 400, -4051);
+        }
+        $receivedOrder = Order::join('addresses',function ($join) {
+            $join->on('orders.address_id', '=', 'addresses.address_id');
+        })->select('order_id','express_id','package_size','addresses.address','addresses.address_detail','note','order_time')->where('deliverer_id','=',$deliverer_id)->orderBy('order_time','desc')->get();
+        foreach ($receivedOrder as $k => $v){
+            $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
+            unset($v['express_id']);
+        }
+        return self::setResponse($receivedOrder, 200, 0);
     }
 
 }

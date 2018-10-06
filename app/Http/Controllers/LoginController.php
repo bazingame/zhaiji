@@ -29,14 +29,15 @@ class LoginController extends Controller
                 'authorization'=>encrypt($user->user_id),
                 'headimg_url'=>$user->headimg_url,
                 'addresses'=>$address,
-//                'orders'=>$orders,
                 'phone'=>$user->phone,
+                'type'=>'user',
             );
            return self::setResponse($data,200,0);
            //快递员
         }elseif($deliverer = Deliverer::where('open_id','=',$open_id)->first()){
             $data = array(
                 'authorization'=>encrypt($deliverer->deliverer_id),
+                'type'=>'deliverer',
             );
             return self::setResponse($data,200,0);
             //未注册

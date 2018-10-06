@@ -480,7 +480,7 @@ HTTP头信息:`Authorization:authorization`
 ### 1.获取快递可接单列表
 
 HTTP: **`GET`**
-URL: `{host}/order/{start}/{limit}`
+URL: `{host}/deliverer/order/{start}/{limit}`
 HTTP头信息:`Authorization:authorization`
 
 `start`为数据起始点,`limit`为数据长度

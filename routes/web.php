@@ -72,6 +72,8 @@ Route::group(['prefix'=>'address','middleware'=>'user_auth'],function (){
 Route::group(['prefix'=>'deliverer'],function (){
     //获取快递可接单列表
     Route::get('/order/{start}/{limit}',['middleware'=>'user_auth','uses'=>'OrderController@getUnReceivedOrder']);
+    //获取已经接单列表
+    Route::get('/received-order/',['middleware'=>'user_auth','uses'=>'OrderController@getReceivedOrder']);
     //添加快递员
     Route::post('/','DelivererController@addDeliverer');
     //修改信息
