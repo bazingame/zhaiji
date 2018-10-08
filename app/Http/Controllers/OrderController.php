@@ -222,9 +222,10 @@ class OrderController extends Controller
             //只有是已接单状态的才可以修改
             if($order->status==2){
                 $order->status = 3;
+                $order->finish = Date("Y-m-d H:i:s",time());
                 //TODO 快递员加一单
                 if($order->save()) {
-                    return self::setResponse(null, 200, 0);
+                    return self::setResponse(array('status_code'=>'3','status'=>'已完成'), 200, 0);
                 }else{
                     return self::setResponse(null, 500, -4006);
                 }
@@ -269,6 +270,7 @@ class OrderController extends Controller
             //只有是未接单状态的才可以修改
             if($order->status==1){
                 $order->status = 2;
+                $order->take_order_time = Date("Y-m-d H:i:s",time());
                 $order->deliverer_id = $deliverer_id;
                 if($order->save()) {
                     return self::setResponse(null, 200, 0);

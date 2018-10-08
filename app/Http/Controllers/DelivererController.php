@@ -30,7 +30,17 @@ class DelivererController extends Controller
             $name = $deliverer->name;
             $order_amount= $deliverer->order_amount;
             $mark= $deliverer->mark;
-            return self::setResponse(array('phone'=>$phone,'name'=>$name,'order_amount'=>$order_amount,'mark'=>$mark),200,0);
+
+            //总收入
+            $order_money = $deliverer->order_money;
+            //总订单
+            $order_count = $deliverer->order_count;
+            //今日收入
+            $order_money_today = $deliverer->order_money_today;
+            //今日订单
+            $order_count_today = $deliverer->order_count_today;
+
+            return self::setResponse(array('phone'=>$phone,'name'=>$name,'order_amount'=>$order_amount,'mark'=>$mark,'order_money','order_money'=>$order_money,'order_count'=>$order_count,'order_money_today'=>$order_money_today,'order_count_today'=>$order_count_today),200,0);
         }else{
             return self::setResponse(null,400,-4016);
         }

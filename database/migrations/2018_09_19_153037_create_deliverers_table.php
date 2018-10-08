@@ -20,6 +20,8 @@ class CreateDeliverersTable extends Migration
             $table->string('order_amount');
             $table->string('mark');
             $table->string('phone');
+            $table->string('order_count');
+            $table->string('order_money_count');
             $table->dateTime('register_time');
             $table->primary('deliverer_id');
             $table->timestamps();
