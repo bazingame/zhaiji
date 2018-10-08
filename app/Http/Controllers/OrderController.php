@@ -6,6 +6,7 @@ use App\Models\Address;
 use App\Models\Express;
 use App\Models\Order;
 use App\Models\Statistics;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Mockery\Test\Generator\StringManipulation\Pass\CallTypeHintPassTest;
 use phpDocumentor\Reflection\Types\Self_;
@@ -78,6 +79,7 @@ class OrderController extends Controller
             return self::setResponse(null,400,-4009);
         }
 
+
         //TODO 检查物流代号
 
         //存入数据库
@@ -103,7 +105,19 @@ class OrderController extends Controller
             $statistics = Statistics::where('id','=',1)->first();
             $statistics->order_count++;
             $statistics->save();
-            return self::setResponse(null,200,0);
+
+
+            //获取用户open_id
+            $user = User::where('user_id','=',$request->user_id)->first();
+            $open_id = $user->open_id;
+            //微信服务器支付请求
+            $pay = new PayController();
+            $payRes = $pay->payOrder($order->order_id,$request->money,$open_id);
+            if($payRes['status']=='SUCCESS'){
+                return self::setResponse($payRes,200,0);
+            }else{
+                return self::setResponse(null,400,-4053);
+            }
         }else{
             return self::setResponse(null,500,-4022);
         }

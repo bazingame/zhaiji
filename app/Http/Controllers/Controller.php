@@ -96,7 +96,7 @@ class Controller extends BaseController
             -4050 => 'user鉴权失败',
             -4051 => '此账户不可操作',
             -4052 => '不可操作状态',
-//            -4053 => '不可操作状态',
+            -4053 => '支付申请失败',
 
         ];
         return $msgForCode[$errcode];

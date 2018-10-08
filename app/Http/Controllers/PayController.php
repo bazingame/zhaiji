@@ -16,17 +16,11 @@ class PayController extends Controller
     /**
     *   发起支付回调支付信息
     */
-    public function payOrder(Request $request)
+    public  function payOrder($order_id,$money,$openid)
     {
-        $order_id = 'O_00000001';
-        $total_fee = '1'; //支付金额
-//        $openid = $request->get('openid'); //用户的Openid
-        $openid = 'oU7a05GPfgn_tIZIDsFR6Xm0tUm4';
-        if (empty($total_fee) || empty($openid)) { //一定要有用户Openid和支付金额
-            die("缺少参数!");
-        }
+        $total_fee = 100*$money;//支付金额单位是分的，所以要乘100
+//        $openid = 'oU7a05GPfgn_tIZIDsFR6Xm0tUm4';
 
-        $total_fee = $total_fee * 100; //支付金额单位是分的，所以要乘100
 
         $appid = $this->appid;
         $MCHID = $this->MCHID; //商户号
@@ -56,6 +50,7 @@ class PayController extends Controller
         $result = json_decode($this->xml_to_json($r));
 
         if ($result->return_code == 'SUCCESS') {
+            $sdata['status']='SUCCESS';
             $sdata['appId'] = $appid;
             $sdata['timeStamp'] = time();
             $sdata['nonceStr'] = md5(time() . rand() . rand() . $openid);
@@ -67,8 +62,9 @@ class PayController extends Controller
             $sign_str = $sign_str . "&key=" . $KEY;
             $sdata['paySign'] = strtoupper(md5($sign_str));
 
-            return self::setResponse($sdata,200,0);
-            echo json_encode($sdata);
+            return $sdata;
+//            echo json_encode($sdata);
+        }else{
 
         }
         // -----------------------都不用改-----------------------------------------------
