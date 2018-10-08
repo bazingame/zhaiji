@@ -79,7 +79,6 @@ class OrderController extends Controller
             return self::setResponse(null,400,-4009);
         }
 
-
         //TODO 检查物流代号
 
         //存入数据库
@@ -134,7 +133,7 @@ class OrderController extends Controller
             //状态未未接单直接取消，状态为已接单申请取消
             //'1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败'
 
-            //直接取消
+            //直接取消//TODO 退款
             if($order->status==1){
                 $order->status = 4;
                 $order->cancel_reason = $request->cancel_reason;
@@ -214,9 +213,12 @@ class OrderController extends Controller
 
     //确认订单
     public function confirmOrder(Request $request){
-        $user_id = $this->getUserId($request);
-        $order_id = $request->order_id;
-        if($order = Order::where('order_id','=',$order_id)->where('user_id','=',$user_id)->first()){
+        $deliverer_id = $this->getUserId($request);
+        if(substr($deliverer_id,0,1)!='D'){
+            return self::setResponse(null, 400, -4051);
+        }
+        $order_id = $request->route('order_id');
+        if($order = Order::where('order_id','=',$order_id)->where('deliverer_id','=',$deliverer_id)->first()){
             //只有是已接单状态的才可以修改
             if($order->status==2){
                 $order->status = 3;
