@@ -55,6 +55,8 @@ Route::group(['prefix'=>'order','middleware'=>'user_auth'],function(){
     //评价订单
     Route::put('/mark/{order_id}','OrderController@markOrder');
 });
+//微信支付回调通知
+Route::get('order/notify_url','OrderController@nofifyOrder');
 
 
 //地址相关
@@ -88,6 +90,8 @@ Route::group(['prefix'=>'deliverer'],function (){
     Route::put('/refuse-cancel/{order_id}','OrderController@refuseCancelOrder');
     //获取配送员信息
     Route::get('/info/{deliverer_id}','DelivererController@getDelivererInfo');
+    //确认订单
+    Route::put('/confirm/{order_id}','OrderController@confirmOrder');
 });
 
 Route::group(['prefix'=>'map'],function (){

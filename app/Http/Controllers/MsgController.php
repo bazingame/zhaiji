@@ -12,7 +12,7 @@ class MsgController extends Controller
 {
     private $appid = '1400145345';
     private $appkey = 'dac289a95435448bccd157f738cc4945';
-    private $templateId = 200858;
+    private $templateId = 205837;
     private $smsSign = '青木信息服务部';
     private $smsErrArr = array('1015'=>'-4044',//手机号在黑名单库
                                 '1016'=>'-4045',//手机号格式错误

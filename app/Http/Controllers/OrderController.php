@@ -37,7 +37,7 @@ class OrderController extends Controller
         $user_id = $this->getUserId($request);
         $order_id = $request->route('order_id');
         //如果是配送员
-        if(substr($user_id,0,1)!='D'){
+        if(substr($user_id,0,1)=='D'){
             if($orderDetail = Order::join('addresses',function ($join) {
                 $join->on('orders.address_id', '=', 'addresses.address_id');
             })->where('orders.deliverer_id','=',$user_id)->where('orders.order_id','=',$order_id)->first())
@@ -296,6 +296,7 @@ class OrderController extends Controller
         }
         return self::setResponse($receivedOrder, 200, 0);
     }
+
 
 }
 
