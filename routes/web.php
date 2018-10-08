@@ -90,6 +90,7 @@ Route::group(['prefix'=>'deliverer'],function (){
     Route::put('/refuse-cancel/{order_id}','OrderController@refuseCancelOrder');
     //获取配送员信息
     Route::get('/info/{deliverer_id}','DelivererController@getDelivererInfo');
+    Route::get('/info_my/{deliverer_id}','DelivererController@getDelivererInfoMy');
     //确认订单
     Route::put('/confirm/{order_id}','OrderController@confirmOrder');
 });

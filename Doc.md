@@ -634,7 +634,46 @@ HTTP头信息:`Authorization:authorization`
     "status": 200,
     "errmsg": "请求成功",
     "data": {
-        "phone": "18670999799",
+        "phone": "18670999999",
+    }
+}
+```
+
+### 6.获取快递员信息
+
+
+HTTP: **`get`**
+URL: `{host}/deliverer/info/{deliverer_id}`
+HTTP头信息:`Authorization:authorization`
+
+参数说明:
+|参数名|类型|描述|示例|
+|----|----|---|----|
+|**send**|||
+|无|无|无|无|
+|**response**|||
+|phone|String|电话号|18670999999|
+|name|String|姓名|冯快快|
+|mark|String|评价|5|
+|order_money|String|总收入|300|
+|order_count|String|总订单|100|
+|order_money_today|String|今日收入|88|
+|order_count_today|String|今日订单|26|
+
+调用成功的返回值示例：
+```json
+{
+    "errcode": 0,
+    "status": 200,
+    "errmsg": "请求成功",
+    "data": {
+        "phone": "18670999791",
+        "name": "冯快快",
+        "mark": "5",
+        "order_money": "300",
+        "order_count": "100",
+        "order_money_today": "88",
+        "order_count_today": "26"
     }
 }
 ```
