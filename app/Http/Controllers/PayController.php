@@ -65,7 +65,7 @@ class PayController extends Controller
             return $sdata;
 //            echo json_encode($sdata);
         }else{
-
+            return $result;
         }
         // -----------------------都不用改-----------------------------------------------
     }
