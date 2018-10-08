@@ -113,10 +113,11 @@ class OrderController extends Controller
             //微信服务器支付请求
             $pay = new PayController();
             $payRes = $pay->payOrder($order->order_id,$request->money,$open_id);
+
             if(isset($payRes['status'])&&$payRes['status']=='SUCCESS'){
                 return self::setResponse($payRes,200,0);
             }else{
-                return self::setResponse(null,400,-4053);
+                return self::setResponse($payRes,400,-4053);
             }
         }else{
             return self::setResponse(null,500,-4022);

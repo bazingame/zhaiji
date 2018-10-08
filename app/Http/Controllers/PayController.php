@@ -21,7 +21,6 @@ class PayController extends Controller
         $total_fee = 100*$money;//支付金额单位是分的，所以要乘100
 //        $openid = 'oU7a05GPfgn_tIZIDsFR6Xm0tUm4';
 
-
         $appid = $this->appid;
         $MCHID = $this->MCHID; //商户号
         $KEY = $this->KEY; //商户key
@@ -33,7 +32,7 @@ class PayController extends Controller
         $data['mch_id'] = $MCHID;    //商户号id
         $data['nonce_str'] = md5($MCHID . time()); //验证的支付
         $data['openid'] = $openid; //用户openid
-        $data['body'] = '青木信息服务部-宅急带领快递'; //微信支付对应的商家/公司主体名
+        $data['body'] = '宅急小程序'; //微信支付对应的商家/公司主体名
         $data['out_trade_no'] = $order_id; //订单号id,用于回调改订单状态
         $data['total_fee'] = $total_fee; //支付金额，单位为分！！
         $data['spbill_create_ip'] = '134.175.42.59'; //验证ip地址，这个不用改随意
@@ -47,23 +46,21 @@ class PayController extends Controller
         $data['sign'] = strtoupper(md5($sign_str));
         $xml = $this->arrayToXml($data);
         $r = $this->postXmlCurl($xml, $url, true);
-        $result = json_decode($this->xml_to_json($r));
+        $result = json_decode($this->xml_to_json($r),true);
 
-        if ($result->return_code == 'SUCCESS') {
-            $sdata['status']='SUCCESS';
+        if ($result['return_code']== 'SUCCESS') {
             $sdata['appId'] = $appid;
-            $sdata['timeStamp'] = time();
+            $sdata['timeStamp'] = ''.time();
             $sdata['nonceStr'] = md5(time() . rand() . rand() . $openid);
-            $sdata['package'] = "prepay_id=" . $result->prepay_id;
+            $sdata['package'] = "prepay_id=" . $result['prepay_id'];
             $sdata['signType'] = "MD5";
 
             ksort($sdata);
             $sign_str = $this->ToUrlParams($sdata);
             $sign_str = $sign_str . "&key=" . $KEY;
             $sdata['paySign'] = strtoupper(md5($sign_str));
-
+            $sdata['status']='SUCCESS';
             return $sdata;
-//            echo json_encode($sdata);
         }else{
             return $result;
         }
