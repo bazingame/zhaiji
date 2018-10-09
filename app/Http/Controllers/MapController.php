@@ -40,8 +40,14 @@ class MapController extends Controller
         $getCoderUrl = 'http://api.map.baidu.com/direction/v2/riding?origin='.$start_latitude.','.$start_longitude.'&destination='.$end_latitude.','.$end_longitude.'&ak='.$this->AK;
         $res = file_get_contents($getCoderUrl);
         $resArr = json_decode($res,true);
+
         if($resArr['status']==0){
-            return self::setResponse($resArr['result'],200,0);
+            $distance  = $resArr['result']['routes'][0]['distance'];
+            $duration  = $resArr['result']['routes'][0]['duration'];
+            //计算价格
+            $money = $distance/1000*0.5;
+            $money = (float)sprintf("%.1f",$money);
+            return self::setResponse(array('distance'=>$distance,'duration'=>$duration,'distance_money'=>$money),200,0);
         }else{
             return self::setResponse(null,500,-4056);
         }

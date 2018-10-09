@@ -23,7 +23,7 @@ class LoginController extends Controller
         $open_id = $request->open_id;
         //open_id与user_id都是用来区别用户的唯一字段
         if($user = User::where('open_id','=',$open_id)->first()){
-            $address = Address::where('user_id','=',$user->user_id)->select('address_id','name','address','address_detail','phone')->get();
+            $address = Address::where('user_id','=',$user->user_id)->select('address_id','name','address','address_detail','phone','latitude','longitude')->get();
 //            $orders = Order::where('user_id','=',$user->user_id)->get();
             $data = array(
                 'authorization'=>encrypt($user->user_id),

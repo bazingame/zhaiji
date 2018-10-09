@@ -685,7 +685,7 @@ HTTP头信息:`Authorization:authorization`
 ### 3.获取距离
 
 HTTP: **`POST`**
-URL: `{host}/distance/{start_latitude}/{start_longitude}/{end_latitude}/{end_longitude}`
+URL: `{host}/map/distance/{start_latitude}/{start_longitude}/{end_latitude}/{end_longitude}`
 HTTP头信息:`Authorization:authorization`
 
 
@@ -698,7 +698,9 @@ HTTP头信息:`Authorization:authorization`
 |end_latitude|String|终点纬度|111.11|
 |end_longitude|String|终点经度|111.11|
 |**response**|||
-参考百度api
+|distance|int|距离(米)|1015|
+|duration|int|时间(秒)|305|
+|distance_money|float|价格(元)|0.5|
 
 调用成功的返回值示例：
 ```json
@@ -706,26 +708,11 @@ HTTP头信息:`Authorization:authorization`
     "errcode": 0,
     "status": 200,
     "errmsg": "请求成功",
-    "data": [
-        {
-            "order_id": "O_00000008",
-            "package_size": "2",
-            "address": "湖南省湘潭市雨湖区",
-            "address_detail": "湘潭大学北苑1栋",
-            "note": null,
-            "order_time": "2018-09-25 18:55:49",
-            "express": "中通"
-        },
-        {
-            "order_id": "O_00000008",
-            "package_size": "2",
-            "address": "湖南省湘潭市雨湖区",
-            "address_detail": "湘潭大学北苑1栋",
-            "note": null,
-            "order_time": "2018-09-25 18:55:49",
-            "express": "中通"
-        }
-    ]
+    "data": {
+        "distance": 1015,
+        "duration": 305,
+        "distance_money": 0.5
+    }
 }
 ```
 

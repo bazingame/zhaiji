@@ -101,3 +101,9 @@ Route::group(['prefix'=>'map'],function (){
    Route::post('/search/{text}','MapController@search');
    Route::post('/distance/{start_latitude}/{start_longitude}/{end_latitude}/{end_longitude}','MapController@distance');
 });
+
+
+Route::group(['prefix'=>'profess'],function (){
+    Route::get('/to-deliverer/{user-id}','ProfessController@toDeliverer');
+    Route::get('/to-user/{deliverer-id}','ProfessController@toUser');
+});
