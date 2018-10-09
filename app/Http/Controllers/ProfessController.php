@@ -14,9 +14,11 @@ class ProfessController extends Controller
         if($user = User::where('user_id','=',$user_id)->first()){
 
             $new_deliver = new Deliverer();
-            $new_deliver->open_id = $user_id->open_id;
-            $new_deliver->phone = $user_id->phone;
-            $new_deliver->register_time = $user_id->register_time;
+            $new_deliver->open_id = $user->open_id;
+            $new_deliver->phone = $user->phone;
+            $new_deliver->register_time = $user->register_time;
+            $new_deliver->name = 'deliverer';//TODO 添加昵称
+            $new_deliver->mark = 0;//TODO 添加昵称
             $new_deliver->order_count = 0;
             $new_deliver->order_money = 0;
             $new_deliver->order_money_today = 0;
@@ -27,17 +29,19 @@ class ProfessController extends Controller
             $deliverer_count = $statistics['deliverer_count'];
             $new_deliver->deliverer_id = "D_".sprintf("%08d",$deliverer_count+1);
 
-            //删除原有账户
-            $user->delete();
+
             if($new_deliver->save()){
                 $statistics->deliverer_count++;
                 $statistics->save();
+
+                //删除原有账户
+                $user->delete();
                 return self::setResponse($new_deliver,200,0);
             }else{
                 return self::setResponse(null,500,-4020);
             }
         }else{
-            return self::setResponse(nulsl,400,-4008);
+            return self::setResponse(null,400,-4008);
         }
     }
 
@@ -55,20 +59,23 @@ class ProfessController extends Controller
             $new_user->headimg_url = $request->headimg_url;
             $new_user->user_id = "U_".sprintf("%08d",$user_count+1);
 
+
             /*暂时不收集用户头像*/
             $new_user->headimg_url = env("APP_URL")."/storage/images/package1.png";
 
-            //删除原有账户
-            $deliverer->delete();
+
             if($new_user->save()){
                 $statistics->user_count++;
                 $statistics->save();
+
+                //删除原有账户
+                $deliverer->delete();
                 return self::setResponse($new_user,200,0);
             }else{
                 return self::setResponse(null,500,-4020);
             }
         }else{
-            return self::setResponse(null,400,-4008);
+            return self::setResponse(null,400,-4016);
         }
     }
 

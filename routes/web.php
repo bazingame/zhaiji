@@ -58,7 +58,6 @@ Route::group(['prefix'=>'order','middleware'=>'user_auth'],function(){
 //微信支付回调通知
 Route::get('order/notify_url','OrderController@nofifyOrder');
 
-
 //地址相关
 Route::group(['prefix'=>'address','middleware'=>'user_auth'],function (){
     //添加地址
@@ -104,6 +103,6 @@ Route::group(['prefix'=>'map'],function (){
 
 
 Route::group(['prefix'=>'profess'],function (){
-    Route::get('/to-deliverer/{user-id}','ProfessController@toDeliverer');
-    Route::get('/to-user/{deliverer-id}','ProfessController@toUser');
+    Route::get('/to-deliverer/{user_id}','ProfessController@toDeliverer');
+    Route::get('/to-user/{deliverer_id}','ProfessController@toUser');
 });
