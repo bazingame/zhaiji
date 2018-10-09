@@ -12,7 +12,7 @@ class AddressController extends Controller
     //添加地址
     public function addAddress(Request $request){
         $request->user_id = $this->getUserId($request);
-        $check = $this->checkParam($request,array('name','address','address_detail','phone'),array('-4017','-4018','-4019','-4015'));
+        $check = $this->checkParam($request,array('name','address','address_detail','phone','latitude','longitude'),array('-4017','-4018','-4019','-4015','-4054','-4055'));
         if(!$check[0]){
             return self::setResponse($check[1],400,$check[1]);
         }
@@ -27,13 +27,15 @@ class AddressController extends Controller
         $address->address = $request->address;
         $address->address_detail = $request->address_detail;
         $address->phone = $request->phone;
+        $address->latitude = $request->latitude;
+        $address->longitude = $request->longitude;
         //TODO 检查phone正确性
         if($address->save()){
             $statistics->address_count++;
             $statistics->save();
 
             //添加后返回新的地址列表数据
-            $addressNew = Address::where('user_id','=',$request->user_id)->select('address_id','name','address','address_detail','phone')->get();
+            $addressNew = Address::where('user_id','=',$request->user_id)->select('address_id','name','address','address_detail','phone','latitude','longitude')->get();
             return self::setResponse($addressNew,200,0);
         }else{
             return self::setResponse(null,400,-4020);

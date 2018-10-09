@@ -90,7 +90,8 @@ Route::group(['prefix'=>'deliverer'],function (){
     Route::put('/refuse-cancel/{order_id}','OrderController@refuseCancelOrder');
     //获取配送员信息
     Route::get('/info/{deliverer_id}','DelivererController@getDelivererInfo');
-    Route::get('/info_my/{deliverer_id}','DelivererController@getDelivererInfoMy');
+    //获取配送员自己的信息
+    Route::get('/info_my','DelivererController@getDelivererInfoMy');
     //确认订单
     Route::put('/confirm/{order_id}','OrderController@confirmOrder');
 });
@@ -98,4 +99,5 @@ Route::group(['prefix'=>'deliverer'],function (){
 Route::group(['prefix'=>'map'],function (){
    Route::post('/getcoder/{latitude}/{longitude}','MapController@getCoder');
    Route::post('/search/{text}','MapController@search');
+   Route::post('/distance/{start_latitude}/{start_longitude}/{end_latitude}/{end_longitude}','MapController@distance');
 });

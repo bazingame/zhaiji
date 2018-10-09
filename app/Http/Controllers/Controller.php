@@ -97,6 +97,10 @@ class Controller extends BaseController
             -4051 => '此账户不可操作',
             -4052 => '不可操作状态',
             -4053 => '支付申请失败',
+            -4054 => 'latitude参数错误',
+            -4055 => '支付申请失败错误',
+            -4056 => '路线规划失败',
+            -4057 => 'distance参数错误',
 
         ];
         return $msgForCode[$errcode];

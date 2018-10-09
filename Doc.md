@@ -409,6 +409,8 @@ HTTP头信息:`Authorization:authorization`
 |name|String|姓名|收货人姓名|
 |address|String|地址|湖南省湘潭市雨湖区|
 |address_detail|String|地址详情|湘潭大学北苑7栋|
+|latitude|String|经度|15.65|
+|longitude|String|纬度|31.5|
 |phone|String|手机号|18670999999|
 |**response**|||
 |无|无|无|无|
@@ -675,6 +677,55 @@ HTTP头信息:`Authorization:authorization`
         "order_money_today": "88",
         "order_count_today": "26"
     }
+}
+```
+
+---
+> ##  地图相关
+### 3.获取距离
+
+HTTP: **`POST`**
+URL: `{host}/distance/{start_latitude}/{start_longitude}/{end_latitude}/{end_longitude}`
+HTTP头信息:`Authorization:authorization`
+
+
+参数说明:
+|参数名|类型|描述|示例|
+|----|----|---|----|
+|**send**|||
+|start_latitude|String|起点纬度|111.11|
+|start_longitude|String|起点经度|111.11|
+|end_latitude|String|终点纬度|111.11|
+|end_longitude|String|终点经度|111.11|
+|**response**|||
+参考百度api
+
+调用成功的返回值示例：
+```json
+{
+    "errcode": 0,
+    "status": 200,
+    "errmsg": "请求成功",
+    "data": [
+        {
+            "order_id": "O_00000008",
+            "package_size": "2",
+            "address": "湖南省湘潭市雨湖区",
+            "address_detail": "湘潭大学北苑1栋",
+            "note": null,
+            "order_time": "2018-09-25 18:55:49",
+            "express": "中通"
+        },
+        {
+            "order_id": "O_00000008",
+            "package_size": "2",
+            "address": "湖南省湘潭市雨湖区",
+            "address_detail": "湘潭大学北苑1栋",
+            "note": null,
+            "order_time": "2018-09-25 18:55:49",
+            "express": "中通"
+        }
+    ]
 }
 ```
 

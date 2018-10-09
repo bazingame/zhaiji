@@ -32,4 +32,19 @@ class MapController extends Controller
         }
     }
 
+    public function distance(Request $request){
+        $start_latitude = $request->route('start_latitude');
+        $start_longitude = $request->route('start_longitude');
+        $end_latitude = $request->route('end_latitude');
+        $end_longitude = $request->route('end_longitude');
+        $getCoderUrl = 'http://api.map.baidu.com/direction/v2/riding?origin='.$start_latitude.','.$start_longitude.'&destination='.$end_latitude.','.$end_longitude.'&ak='.$this->AK;
+        $res = file_get_contents($getCoderUrl);
+        $resArr = json_decode($res,true);
+        if($resArr['status']==0){
+            return self::setResponse($resArr['result'],200,0);
+        }else{
+            return self::setResponse(null,500,-4056);
+        }
+    }
+
 }

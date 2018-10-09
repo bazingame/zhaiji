@@ -68,7 +68,7 @@ class OrderController extends Controller
     //下单
     public function addOrder(Request $request){
         $request->user_id = $this->getUserId($request);
-        $check = $this->checkParam($request,array('address_id','express_id','package_id','insurance','money','package_size',),array('-4009','-4010','-4011','-4012','-4031','-4013'));
+        $check = $this->checkParam($request,array('address_id','express_id','package_id','insurance','money','package_size','distance'),array('-4009','-4010','-4011','-4012','-4031','-4013','-4057'));
         if(!$check[0]){
             return self::setResponse(null,400,$check[1]);
         }
@@ -88,6 +88,7 @@ class OrderController extends Controller
         $order->express_id = $request->express_id;
         $order->package_id = $request->package_id;
         $order->insurance = $request->insurance;
+        $order->distance = $request->distance;
         $order->valuation = $request->valuation;
         $order->note = $request->note;
         $order->money = $request->money;
