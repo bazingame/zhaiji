@@ -1,4 +1,3 @@
 <?php
-$money = 6533.965;
-$money = sprintf("%d",$money);
-echo $money;
+$update_time = substr('2018-08-08 15:20:20',0,10);
+echo $update_time;

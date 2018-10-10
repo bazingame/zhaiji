@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\Deliverer;
 use App\Models\Express;
 use App\Models\Order;
 use App\Models\Statistics;
@@ -105,7 +106,6 @@ class OrderController extends Controller
             $statistics = Statistics::where('id','=',1)->first();
             $statistics->order_count++;
             $statistics->save();
-
 
             //获取用户open_id
             $user = User::where('user_id','=',$request->user_id)->first();
@@ -224,8 +224,21 @@ class OrderController extends Controller
             if($order->status==2){
                 $order->status = 3;
                 $order->finish = Date("Y-m-d H:i:s",time());
-                //TODO 快递员加一单
-                if($order->save()) {
+
+                //更新配送员的个人订单情况
+                $deliverer = Deliverer::where('deliverer_id','=',$deliverer_id);
+                //总订单+1
+                $deliverer->order_count += 1;
+                //总收入+money
+                $deliverer->order_money += $order->money;
+                $update_time = substr($deliverer->update_time,0,10);
+                //上一次订单不是今天的  清零 今日订单+1 今日订单+money
+                if($update_time!=Date("Y-m-d",time())){
+                    $deliverer->order_count_today = 1;
+                    $deliverer->order_money_today = $order->money;
+                }
+
+                if($order->save()&&$deliverer->save()) {
                     return self::setResponse(array('status_code'=>'3','status'=>'已完成'), 200, 0);
                 }else{
                     return self::setResponse(null, 500, -4006);

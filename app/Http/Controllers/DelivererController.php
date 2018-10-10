@@ -35,10 +35,19 @@ class DelivererController extends Controller
             $order_money = $deliverer->order_money;
             //总订单
             $order_count = $deliverer->order_count;
-            //今日收入
-            $order_money_today = $deliverer->order_money_today;
-            //今日订单
-            $order_count_today = $deliverer->order_count_today;
+            //判断是否今日最新
+            $update_time = substr($deliverer->update_time,0,10);
+            if($update_time!=Date("Y-m-d",time())) {
+                //今日收入
+                $order_money_today = 0;
+                //今日订单
+                $order_count_today = 0;
+            }else{
+                //今日收入
+                $order_money_today = $deliverer->order_money_today;
+                //今日订单
+                $order_count_today = $deliverer->order_count_today;
+            }
 
             return self::setResponse(array('phone'=>$phone,'name'=>$name,'order_amount'=>$order_amount,'mark'=>$mark,'order_money'=>$order_money,'order_count'=>$order_count,'order_money_today'=>$order_money_today,'order_count_today'=>$order_count_today),200,0);
         }else{
@@ -46,6 +55,7 @@ class DelivererController extends Controller
         }
     }
 
+    //快递员获取自己的信息
     public function getDelivererInfoMy(Request $request){
         $deliverer_id = self::getUserId($request);
         if($deliverer_id==''){

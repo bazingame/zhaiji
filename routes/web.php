@@ -102,6 +102,7 @@ Route::group(['prefix'=>'map'],function (){
 });
 
 
+//管理员鉴权
 Route::group(['prefix'=>'profess'],function (){
     Route::get('/to-deliverer/{user_id}','ProfessController@toDeliverer');
     Route::get('/to-user/{deliverer_id}','ProfessController@toUser');

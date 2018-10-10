@@ -716,6 +716,66 @@ HTTP头信息:`Authorization:authorization`
 }
 ```
 
+
+---
+> ## 管理员接口
+### 1.切换用户身份
+
+HTTP: **`GET`**
+URL: `{host}/to-deliverer/{user_id}`
+URL: `{host}/to-user/{deliverer_id}`
+
+
+参数说明:
+|参数名|类型|描述|示例|
+|----|----|---|----|
+|**send**|||
+|deliverer_id|String|快递员id|D_00000001|
+|user_id|String|用户id|U_00000001|
+|**response**|||
+
+
+调用成功的返回值示例：
+```json
+{
+    "errcode": 0,
+    "status": 200,
+    "errmsg": "请求成功",
+    "data": {
+        "open_id": "oU7a05GPfgn_tIZIDsFR6Xm0tUm4",
+        "phone": "18670999994",
+        "register_time": {
+            "date": "2018-09-24 16:42:22.000000",
+            "timezone_type": 3,
+            "timezone": "Asia/Shanghai"
+        },
+        "name": "deliverer",
+        "mark": 0,
+        "order_count": 0,
+        "order_money": 0,
+        "order_money_today": 0,
+        "order_count_today": 0,
+        "deliverer_id": "D_00000005",
+        "updated_at": "2018-10-09 20:34:06",
+        "created_at": "2018-10-09 20:34:06"
+    }
+}
+```
+```json
+{
+    "errcode": 0,
+    "status": 200,
+    "errmsg": "请求成功",
+    "data": {
+        "open_id": "oU7a05GPfgn_tIZIDsFR6Xm0tUm4",
+        "phone": "18670999994",
+        "register_time": "2018-09-24 16:42:22",
+        "headimg_url": "https://zhaiji.hammerfood.cn/storage/images/package1.png",
+        "user_id": "U_00000014"
+    }
+}
+```
+
 ---
 > ##  错误码
 |错误码|错误详情|
@@ -773,3 +833,8 @@ HTTP头信息:`Authorization:authorization`
 |-4050|user鉴权失败|
 |-4051|此账户不可操作|
 |-4052|不可操作状态|
+|-4053|支付申请失败|
+|-4054|latitude参数错误|
+|-4055|longitude参数错误|
+|-4056|路线规划失败|
+|-4057|distance参数错误|
