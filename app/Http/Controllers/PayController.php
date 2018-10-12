@@ -90,7 +90,7 @@ class PayController extends Controller
     /**
      * 【退款的接口】
      */
-    public function payRefund($order_id)
+    public function payRefund($order_id,$total_free)
     {
         $appid = $this->appid;
         $MCHID = $this->MCHID; //商户号
@@ -101,9 +101,9 @@ class PayController extends Controller
         $data['mch_id'] = $MCHID;    //商户号id
         $data['nonce_str'] = md5($MCHID . time()); //验证的支付
         $data['out_trade_no'] = $order_id; //商户系统内部订单号
-        $data['out_refund_no'] = $order_id; //商户退款单号
-        $data['total_fee'] = $order_id; //订单金额
-        $data['refund_fee'] = $order_id; //退款金额
+        $data['out_refund_no'] = 'T'.substr($order_id,1,9); //商户退款单号
+        $data['total_fee'] = $total_free; //订单金额
+        $data['refund_fee'] = $total_free; //退款金额
 
 
         ksort($data);
@@ -112,16 +112,32 @@ class PayController extends Controller
         $data['sign'] = strtoupper(md5($sign_str));
         $xml = $this->arrayToXml($data);
         $r = $this->postXmlCurl($xml, $url, true);
-//        $result = json_decode($this->xml_to_json($r), true);
-        return $r;
+        $result = json_decode($this->xml_to_json($r), true);
+        return $result;
+    }
 
-//        if ($result['return_code'] == 'SUCCESS') {
-//            return $result;
-//        } else {
-//            return $result;
-//        }
+    /**
+     * 【查询退款状态】
+     */
+    public function refundQuery($order_id){
+        $appid = $this->appid;
+        $MCHID = $this->MCHID; //商户号
+        $KEY = $this->KEY; //商户key
+        $url = "https://api.mch.weixin.qq.com/secapi/pay/refund"; //退款url
 
+        $data['appid'] = $appid;  //小程序appid
+        $data['mch_id'] = $MCHID;    //商户号id
+        $data['nonce_str'] = md5($MCHID . time()); //验证的支付
+        $data['out_trade_no'] = $order_id; //商户系统内部订单号
 
+        ksort($data);
+        $sign_str = $this->ToUrlParams($data);
+        $sign_str = $sign_str . "&key=" . $KEY;
+        $data['sign'] = strtoupper(md5($sign_str));
+        $xml = $this->arrayToXml($data);
+        $r = $this->postXmlCurl($xml, $url, true);
+        $result = json_decode($this->xml_to_json($r), true);
+        return $result;
     }
 
     /**
