@@ -42,12 +42,18 @@ class MapController extends Controller
         $resArr = json_decode($res,true);
 
         if($resArr['status']==0){
-            $distance  = $resArr['result']['routes'][0]['distance'];
-            $duration  = $resArr['result']['routes'][0]['duration'];
-            //计算价格
-            $money = $distance/1000*0.5;
-            $money = (float)sprintf("%.1f",$money);
-            return self::setResponse(array('distance'=>$distance,'duration'=>$duration,'distance_money'=>$money),200,0);
+            //没有路线
+            if(count($resArr['result']['routes'])!=0){
+                $distance  = $resArr['result']['routes'][0]['distance'];
+                $duration  = $resArr['result']['routes'][0]['duration'];
+                //计算价格
+                $money = $distance/1000*0.5;
+                $money = (float)sprintf("%.1f",$money);
+                return self::setResponse(array('distance'=>$distance,'duration'=>$duration,'distance_money'=>$money),200,0);
+            }else{
+                return self::setResponse(array('distance'=>0,'duration'=>0,'distance_money'=>0),200,0);
+            }
+
         }else{
             return self::setResponse(null,500,-4056);
         }
