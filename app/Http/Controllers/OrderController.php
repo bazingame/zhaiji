@@ -137,7 +137,7 @@ class OrderController extends Controller
             //'1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败'
 
             //直接取消//
-            if($order->status==1&&$order->pay_status=0){
+            if($order->status==1&&$order->pay_status==0){
                 //ss代表成功
                 if($status=='ss'){
                     $order->pay_status = 1;
@@ -176,6 +176,10 @@ class OrderController extends Controller
                 $order->status = 4;
                 $order->cancel_reason = $request->cancel_reason;
                 if($order->save()){
+
+                    //申请退款
+
+
                     return self::setResponse(array('status_code'=>'4','status'=>'已取消'),200,0);
                 }else{
                     return self::setResponse(null,400,-4006);

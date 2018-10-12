@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Self_;
 
@@ -14,13 +15,12 @@ class PayController extends Controller
     private $KEY = "asd59a2as1d89aa1d1a61d89aa1sd8a9"; //商户号key
 
     /**
-    *   发起支付回调支付信息
-    */
-    public  function payOrder($order_id,$money,$openid)
+     *   发起支付回调支付信息
+     */
+    public function payOrder($order_id, $money, $openid)
     {
-        $total_fee = 100*$money;//支付金额单位是分的，所以要乘100
+        $total_fee = 100 * $money;//支付金额单位是分的，所以要乘100
 //        $openid = 'oU7a05GPfgn_tIZIDsFR6Xm0tUm4';
-
         $appid = $this->appid;
         $MCHID = $this->MCHID; //商户号
         $KEY = $this->KEY; //商户key
@@ -46,11 +46,11 @@ class PayController extends Controller
         $data['sign'] = strtoupper(md5($sign_str));
         $xml = $this->arrayToXml($data);
         $r = $this->postXmlCurl($xml, $url, true);
-        $result = json_decode($this->xml_to_json($r),true);
+        $result = json_decode($this->xml_to_json($r), true);
 
-        if ($result['return_code']== 'SUCCESS') {
+        if ($result['return_code'] == 'SUCCESS') {
             $sdata['appId'] = $appid;
-            $sdata['timeStamp'] = ''.time();
+            $sdata['timeStamp'] = '' . time();
             $sdata['nonceStr'] = md5(time() . rand() . rand() . $openid);
             $sdata['package'] = "prepay_id=" . $result['prepay_id'];
             $sdata['signType'] = "MD5";
@@ -59,9 +59,9 @@ class PayController extends Controller
             $sign_str = $this->ToUrlParams($sdata);
             $sign_str = $sign_str . "&key=" . $KEY;
             $sdata['paySign'] = strtoupper(md5($sign_str));
-            $sdata['status']='SUCCESS';
+            $sdata['status'] = 'SUCCESS';
             return $sdata;
-        }else{
+        } else {
             return $result;
         }
         // -----------------------都不用改-----------------------------------------------
@@ -69,9 +69,6 @@ class PayController extends Controller
 
     /**
      * 【支付成功后回调】
-     *
-     *  by: leoyi
-     *  Date:2018-04-08
      */
     public function suc_call(Request $request)
     {
@@ -92,23 +89,43 @@ class PayController extends Controller
 
     /**
      * 【退款的接口】
-     *
-     * by:leoyi
-     * Date: 2018-04-08
      */
-    private function payRefund(Request $request)
+    public function payRefund($order_id)
     {
-        // 具体代码后期另外写 也可以联系我私发
+        $appid = $this->appid;
+        $MCHID = $this->MCHID; //商户号
+        $KEY = $this->KEY; //商户key
+        $url = "https://api.mch.weixin.qq.com/secapi/pay/refund"; //退款url
+
+        $data['appid'] = $appid;  //小程序appid
+        $data['mch_id'] = $MCHID;    //商户号id
+        $data['nonce_str'] = md5($MCHID . time()); //验证的支付
+        $data['out_trade_no'] = $order_id; //商户系统内部订单号
+        $data['out_refund_no'] = $order_id; //商户退款单号
+        $data['total_fee'] = $order_id; //订单金额
+        $data['refund_fee'] = $order_id; //退款金额
+
+
+        ksort($data);
+        $sign_str = $this->ToUrlParams($data);
+        $sign_str = $sign_str . "&key=" . $KEY;
+        $data['sign'] = strtoupper(md5($sign_str));
+        $xml = $this->arrayToXml($data);
+        $r = $this->postXmlCurl($xml, $url, true);
+        $result = json_decode($this->xml_to_json($r), true);
+        return $result;
+
+//        if ($result['return_code'] == 'SUCCESS') {
+//            return $result;
+//        } else {
+//            return $result;
+//        }
+
+
     }
-    /*
-    *	注意：以下方法都是为了方便直接调取转换格式用的方法，
-    *	个人需要可以另外抽取出来放
-    *==========================================
-    *	以下代码不需要修改！！
-    */
+
     /**
      * 用户post方法请求xml信息用的
-     * @author write by leoyi 2018-04-8
      */
     public function postXmlCurl($xml, $url, $useCert = false, $second = 10)
     {
@@ -139,8 +156,6 @@ class PayController extends Controller
 
     /*
     *   用于微信支付转换认证的信息用的
-    *   by:leoyi
-    *   date:2018-4-8
     */
     public function ToUrlParams($data)
     {
@@ -157,8 +172,6 @@ class PayController extends Controller
 
     /*
     *   微信支付-数组转xml
-    *   by:leoyi
-    *   date:2018-4-8
     */
     public function arrayToXml($arr)
     {
@@ -176,8 +189,6 @@ class PayController extends Controller
 
     /*
     *   微信支付-数组转xml
-    *   by:leoyi
-    *   date:2018-4-8
     */
     public function xml_to_json($xmlstring)
     {
@@ -186,8 +197,6 @@ class PayController extends Controller
 
     /*
     *   post方法
-    *   by:leoyi
-    *   date:2018-4-8
     */
     public function post_url($post_data, $url)
     {
@@ -215,8 +224,6 @@ class PayController extends Controller
 
     /*
     * 把xml转换成array
-    * by:leoyi
-    * Date:2018-4-11
     */
     public function xml_to_array($xml)
     {
