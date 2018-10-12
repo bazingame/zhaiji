@@ -123,7 +123,7 @@ class PayController extends Controller
         $appid = $this->appid;
         $MCHID = $this->MCHID; //商户号
         $KEY = $this->KEY; //商户key
-        $url = "https://api.mch.weixin.qq.com/secapi/pay/refund"; //退款url
+        $url = "https://api.mch.weixin.qq.com/pay/refundquery"; //退款url
 
         $data['appid'] = $appid;  //小程序appid
         $data['mch_id'] = $MCHID;    //商户号id

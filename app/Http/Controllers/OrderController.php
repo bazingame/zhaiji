@@ -56,18 +56,22 @@ class OrderController extends Controller
                 $join->on('orders.address_id', '=', 'addresses.address_id');
             })->where('orders.user_id','=',$user_id)->where('orders.order_id','=',$order_id)->first())
             {
-                $orderOrigin = $orderDetail;
                 $orderDetail['express'] = Express::where('express_id','=',$orderDetail['express_id'])->select('name')->first()['name'];
                 unset($orderDetail['express_id']);
                 unset($orderDetail['user_id']);
                 $orderDetail['status'] = $this->statusArr[$orderDetail['status']];
 
                 //如果有申请记录且未退款完成则进行查询更新
-                if($orderDetail->refund_apply==1&&$orderDetail->status==4&&$orderDetail->refund_status=='PROCESSING'){
+                if($orderDetail->refund_apply==1&&$orderDetail->status=='已取消'&&$orderDetail->refund_status=='PROCESSING'){
                     //查看更新退款状态
                     $pay = new PayController();
                     $payRefund = $pay->refundQuery($order_id);
                     if($payRefund['return_code']=='SUCCESS'){
+
+                        $orderOrigin = Order::join('addresses',function ($join) {
+                            $join->on('orders.address_id', '=', 'addresses.address_id');
+                        })->where('orders.user_id','=',$user_id)->where('orders.order_id','=',$order_id)->first();
+
                         $orderOrigin->refund_status = $payRefund['refund_status_0'];
                         $orderOrigin->save();
                         $refund_status_ENG = $payRefund['refund_status_0'];
@@ -75,22 +79,26 @@ class OrderController extends Controller
                 }else{
                     $refund_status_ENG = $orderDetail['refund_status'];
                 }
-                switch ($refund_status_ENG){
-                    case 'SUCCESS':
-                        $refund_status_CH = '退款成功';
-                        break;
-                    case 'REFUNDCLOSE':
-                        $refund_status_CH = '退款关闭';
-                        break;
-                    case 'PROCESSING':
-                        $refund_status_CH = '退款处理中';
-                        break;
-                    case 'CHANGE':
-                        $refund_status_CH = '退款异常';
-                        break;
+                if($orderDetail->refund_apply==1){
+                    switch ($refund_status_ENG){
+                        case 'SUCCESS':
+                            $refund_status_CH = '退款成功';
+                            break;
+                        case 'REFUNDCLOSE':
+                            $refund_status_CH = '退款关闭';
+                            break;
+                        case 'PROCESSING':
+                            $refund_status_CH = '退款处理中';
+                            break;
+                        case 'CHANGE':
+                            $refund_status_CH = '退款异常';
+                            break;
+                        default:
+                            $refund_status_CH = '退款异常';
+                            break;
+                    }
+                    $orderDetail['refund_status'] = $refund_status_CH;
                 }
-                $orderDetail['refund_status'] = $refund_status_CH;
-
                 return self::setResponse($orderDetail,200,0);
             }
         }
@@ -219,7 +227,7 @@ class OrderController extends Controller
                         return self::setResponse(null,400,-4006);
                     }
                 }else{
-                    $order->refound_status = $payRefund['return_msg'];
+                    $order->refund_status = $payRefund['err_code'];
                     if($order->save()){
                         return self::setResponse(array('status_code'=>'4','status'=>'已取消'),200,0);
                     }else{
@@ -264,14 +272,14 @@ class OrderController extends Controller
                 //退款请求为真
                 $order->refund_apply = 1;
                 if($payRefund['return_code']=='SUCCESS'&&$payRefund['result_code']=='SUCCESS'){
-                    $order->refund_status = 'applying';
+                    $order->refund_status = 'PROCESSING';
                     if($order->save()){
                         return self::setResponse(array('status_code'=>'4','status'=>'已取消'),200,0);
                     }else{
                         return self::setResponse(null,400,-4006);
                     }
                 }else{
-                    $order->refound_status = $payRefund['return_msg'];
+                    $order->refund_status = $payRefund['err_code'];
                     if($order->save()){
                         return self::setResponse(array('status_code'=>'4','status'=>'已取消'),200,0);
                     }else{
