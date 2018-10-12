@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration
             $table->string('address_id');
             $table->string('express_id');
             $table->string('package_id');
+            $table->string('express_address')->comment('物流公司地址');
             $table->string('insurance');
             $table->string('distance')->nullable();
             $table->string('valuation')->nullable()->comment('估值');

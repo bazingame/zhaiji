@@ -24,7 +24,7 @@ class OrderController extends Controller
         }
         if($orderList = Order::join('addresses',function ($join) {
             $join->on('orders.address_id', '=', 'addresses.address_id');
-            })->select('order_id','express_id','order_time','deliverer_id','status','money','express_id','package_id','mark_status','addresses.name','addresses.address','addresses.address_detail','addresses.phone')->where('orders.user_id','=',$user_id)->orderby('order_time','desc')->get()){
+            })->select('order_id','express_id','express_address','order_time','deliverer_id','status','money','package_id','mark_status','addresses.name','addresses.address','addresses.address_detail','addresses.phone')->where('orders.user_id','=',$user_id)->orderby('order_time','desc')->get()){
             foreach ($orderList as $k => $v){
                 $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
                 unset($v['express_id']);
@@ -69,7 +69,7 @@ class OrderController extends Controller
     //下单
     public function addOrder(Request $request){
         $request->user_id = $this->getUserId($request);
-        $check = $this->checkParam($request,array('address_id','express_id','package_id','insurance','money','package_size','distance'),array('-4009','-4010','-4011','-4012','-4031','-4013','-4057'));
+        $check = $this->checkParam($request,array('address_id','express_id','express_address','package_id','insurance','money','package_size','distance'),array('-4009','-4010','-4058','-4011','-4012','-4031','-4013','-4057'));
         if(!$check[0]){
             return self::setResponse(null,400,$check[1]);
         }
@@ -87,6 +87,7 @@ class OrderController extends Controller
         $order->user_id = $request->user_id;
         $order->address_id = $request->address_id;
         $order->express_id = $request->express_id;
+        $order->express_address = $request->express_address;
         $order->package_id = $request->package_id;
         $order->insurance = $request->insurance;
         $order->distance = $request->distance;
@@ -305,7 +306,7 @@ class OrderController extends Controller
         $limit = $request->route('limit');
         $unReceivedOrder = Order::join('addresses',function ($join) {
                     $join->on('orders.address_id', '=', 'addresses.address_id');
-                })->select('order_id','express_id','package_size','addresses.address','addresses.address_detail','note','order_time')->where('status','=','1')->orderBy('order_time','desc')->offset($start)->limit($limit)->get();
+                })->select('order_id','express_id','express_address','package_size','addresses.address','addresses.address_detail','note','order_time')->where('status','=','1')->orderBy('order_time','desc')->offset($start)->limit($limit)->get();
         foreach ($unReceivedOrder as $k => $v){
             $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
             unset($v['express_id']);
@@ -321,7 +322,7 @@ class OrderController extends Controller
         }
         $receivedOrder = Order::join('addresses',function ($join) {
             $join->on('orders.address_id', '=', 'addresses.address_id');
-        })->select('order_id','express_id','package_size','package_id','status','money','addresses.address','addresses.address_detail','note','order_time')->where('deliverer_id','=',$deliverer_id)->orderBy('order_time','desc')->get();
+        })->select('order_id','express_id','express_address','package_size','package_id','status','money','addresses.address','addresses.address_detail','note','order_time')->where('deliverer_id','=',$deliverer_id)->orderBy('order_time','desc')->get();
         foreach ($receivedOrder as $k => $v){
             $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
             unset($v['express_id']);

@@ -101,6 +101,7 @@ class Controller extends BaseController
             -4055 => 'longitude参数错误',
             -4056 => '路线规划失败',
             -4057 => 'distance参数错误',
+            -4058 => 'express_address参数错误',
 
         ];
         return $msgForCode[$errcode];
