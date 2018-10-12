@@ -54,6 +54,8 @@ Route::group(['prefix'=>'order','middleware'=>'user_auth'],function(){
     Route::put('/confirm/{order_id}','OrderController@confirmOrder');
     //评价订单
     Route::put('/mark/{order_id}','OrderController@markOrder');
+    //修改订单支付状态
+    Route::put('/guagua/{order_id}','OrderController@revisePayStatus');
 });
 //微信支付回调通知
 Route::get('order/notify_url','OrderController@nofifyOrder');
@@ -90,7 +92,7 @@ Route::group(['prefix'=>'deliverer'],function (){
     //获取配送员信息
     Route::get('/info/{deliverer_id}','DelivererController@getDelivererInfo');
     //获取配送员自己的信息
-    Route::get('/info_my','DelivererController@getDelivererInfoMy');
+    Route::get('/info-my','DelivererController@getDelivererInfoMy');
     //确认订单
     Route::put('/confirm/{order_id}','OrderController@confirmOrder');
 });

@@ -16,7 +16,7 @@ class OrderController extends Controller
 {
     private $statusArr = array('1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败');
 
-    //获取订单列表
+    //获取订单列表(支付成功的)
     public function getOrder(Request $request){
         $user_id = $this->getUserId($request);
         if($user_id==null){
@@ -24,7 +24,7 @@ class OrderController extends Controller
         }
         if($orderList = Order::join('addresses',function ($join) {
             $join->on('orders.address_id', '=', 'addresses.address_id');
-            })->select('order_id','express_id','express_address','order_time','deliverer_id','status','money','package_id','mark_status','addresses.name','addresses.address','addresses.address_detail','addresses.phone')->where('orders.user_id','=',$user_id)->orderby('order_time','desc')->get()){
+            })->select('order_id','express_id','express_address','order_time','deliverer_id','status','money','package_id','mark_status','addresses.name','addresses.address','addresses.address_detail','addresses.phone')->where('orders.user_id','=',$user_id)->where('orders.pay_status','=',1)->orderby('order_time','desc')->get()){
             foreach ($orderList as $k => $v){
                 $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
                 unset($v['express_id']);
@@ -115,6 +115,7 @@ class OrderController extends Controller
             $payRes = $pay->payOrder($order->order_id,$request->money,$open_id);
 
             if(isset($payRes['status'])&&$payRes['status']=='SUCCESS'){
+                $payRes['order_id'] = $order->order_id;
                 return self::setResponse($payRes,200,0);
             }else{
                 return self::setResponse($payRes,400,-4053);
@@ -122,6 +123,42 @@ class OrderController extends Controller
         }else{
             return self::setResponse(null,500,-4022);
         }
+
+    }
+
+    //修改支付状态
+    public function revisePayStatus(Request $request){
+        $user_id = $this->getUserId($request);
+        $order_id = $request->order_id;
+        //这里对外统一为guagua参数，代表支付状态
+        $status = $request->guagua;
+        if($order = Order::where('order_id','=',$order_id)->where('user_id','=',$user_id)->first()){
+            //只有状态为未接单才可修改
+            //'1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败'
+
+            //直接取消//
+            if($order->status==1&&$order->pay_status=0){
+                //ss代表成功
+                if($status=='ss'){
+                    $order->pay_status = 1;
+                //ss代表失败
+                }else if($status=='gg'){
+                    $order->pay_status = -1;
+                }
+                if($order->save()){
+                    return self::setResponse(null,200,0);
+                }else{
+                    return self::setResponse(null,400,-4006);
+                }
+            }else{
+                return self::setResponse(null,400,-4059);
+            }
+        }else{
+            return self::setResponse(null,400,-4025);
+        }
+
+
+
 
     }
 
@@ -305,7 +342,7 @@ class OrderController extends Controller
         $limit = $request->route('limit');
         $unReceivedOrder = Order::join('addresses',function ($join) {
                     $join->on('orders.address_id', '=', 'addresses.address_id');
-                })->select('order_id','express_id','express_address','package_size','addresses.address','addresses.address_detail','note','order_time')->where('status','=','1')->orderBy('order_time','desc')->offset($start)->limit($limit)->get();
+                })->select('order_id','express_id','express_address','package_size','addresses.address','addresses.address_detail','note','order_time')->where('status','=','1')->where('pay_status','=',1)->orderBy('order_time','desc')->offset($start)->limit($limit)->get();
         foreach ($unReceivedOrder as $k => $v){
             $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
             unset($v['express_id']);
