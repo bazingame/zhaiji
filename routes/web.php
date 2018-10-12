@@ -110,4 +110,4 @@ Route::group(['prefix'=>'profess'],function (){
     Route::get('/to-user/{deliverer_id}','ProfessController@toUser');
 });
 
-Route::post('/tp','PayController@payRefound');
+Route::post('/tp','PayController@payRefund');

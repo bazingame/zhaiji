@@ -112,8 +112,8 @@ class PayController extends Controller
         $data['sign'] = strtoupper(md5($sign_str));
         $xml = $this->arrayToXml($data);
         $r = $this->postXmlCurl($xml, $url, true);
-        $result = json_decode($this->xml_to_json($r), true);
-        return $result;
+//        $result = json_decode($this->xml_to_json($r), true);
+        return $r;
 
 //        if ($result['return_code'] == 'SUCCESS') {
 //            return $result;
@@ -141,6 +141,8 @@ class PayController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_POST, TRUE);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+        curl_setopt($ch,CURLOPT_SSLCERT, dirname(__FILE__) . '/cacert/apiclient_cert.pem');
+        curl_setopt($ch,CURLOPT_SSLKEY, dirname(__FILE__) . '/cacert/apiclient_key.pem');
         //运行curl
         $data = curl_exec($ch);
         //返回结果
