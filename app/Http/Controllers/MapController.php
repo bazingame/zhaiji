@@ -46,8 +46,8 @@ class MapController extends Controller
             if(count($resArr['result']['routes'])!=0){
                 $distance  = $resArr['result']['routes'][0]['distance'];
                 $duration  = $resArr['result']['routes'][0]['duration'];
-                //计算价格
-                $money = $distance/1000*0.5;
+                //计算价格      //每公里3元
+                $money = $distance/1000*3;
                 $money = (float)sprintf("%.1f",$money);
                 return self::setResponse(array('distance'=>$distance,'duration'=>$duration,'distance_money'=>$money),200,0);
             }else{

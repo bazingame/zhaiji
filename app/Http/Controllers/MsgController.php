@@ -98,10 +98,14 @@ class MsgController extends Controller
                 //顺便注册登录该账户
                 //注册
                 $addRes = UserController::addUSer($request);
-                //登录
-                $loginRes = LoginController::login($request);
+                if($addRes->original['errcode']==0&&$addRes->original['status']==200){
+                    //登录
+                    $loginRes = LoginController::login($request);
+                    return self::setResponse(get_object_vars($loginRes)['original']['data'],200,0);
+                }else{
+                    return $addRes;
+                }
 
-                return self::setResponse(get_object_vars($loginRes)['original']['data'],200,0);
             }else{
                 return self::setResponse(null,400,-4042);
             }

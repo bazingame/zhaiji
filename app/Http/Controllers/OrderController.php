@@ -15,7 +15,7 @@ use phpDocumentor\Reflection\Types\Self_;
 class OrderController extends Controller
 {
     private $statusArr = array('1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败');
-
+                                //   notToken      token        finish       cancel         applying        refuse
     //获取订单列表(支付成功的)
     public function getOrder(Request $request){
         $user_id = $this->getUserId($request);
@@ -24,10 +24,11 @@ class OrderController extends Controller
         }
         if($orderList = Order::join('addresses',function ($join) {
             $join->on('orders.address_id', '=', 'addresses.address_id');
-            })->select('order_id','express_id','express_address','order_time','deliverer_id','status','money','package_id','mark_status','addresses.name','addresses.address','addresses.address_detail','addresses.phone')->where('orders.user_id','=',$user_id)->where('orders.pay_status','=',1)->orderby('order_time','desc')->get()){
+            })->select('order_id','express_id','express_address','order_time','deliverer_id','status','money','package_id','package_size','mark_status','addresses.name','addresses.address','addresses.address_detail','addresses.phone')->where('orders.user_id','=',$user_id)->where('orders.pay_status','=',1)->orderby('order_time','desc')->get()){
             foreach ($orderList as $k => $v){
                 $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
                 unset($v['express_id']);
+                $v['status_num'] = $v['status'];
                 $v['status'] = $this->statusArr[$v['status']];
             }
             return self::setResponse($orderList,200,0);
@@ -47,6 +48,7 @@ class OrderController extends Controller
                 $orderDetail['express'] = Express::where('express_id','=',$orderDetail['express_id'])->select('name')->first()['name'];
                 unset($orderDetail['express_id']);
                 unset($orderDetail['user_id']);
+                $orderDetail['status_num'] = $orderDetail['status'];
                 $orderDetail['status'] = $this->statusArr[$orderDetail['status']];
                 return self::setResponse($orderDetail,200,0);
             }
@@ -59,6 +61,7 @@ class OrderController extends Controller
                 $orderDetail['express'] = Express::where('express_id','=',$orderDetail['express_id'])->select('name')->first()['name'];
                 unset($orderDetail['express_id']);
                 unset($orderDetail['user_id']);
+                $orderDetail['status_num'] = $orderDetail['status'];
                 $orderDetail['status'] = $this->statusArr[$orderDetail['status']];
 
                 //如果有申请记录且未退款完成则进行查询更新
@@ -128,7 +131,6 @@ class OrderController extends Controller
         $order->express_address = $request->express_address;
         $order->package_id = $request->package_id;
         $order->insurance = $request->insurance;
-        $order->valuation = $request->valuation;
         $order->note = $request->note;
         $order->money = $request->money;
         $order->package_size = $request->package_size;
@@ -332,10 +334,10 @@ class OrderController extends Controller
             //只有是已接单状态的才可以修改
             if($order->status==2){
                 $order->status = 3;
-                $order->finish = Date("Y-m-d H:i:s",time());
+                $order->finish_time = Date("Y-m-d H:i:s",time());
 
                 //更新配送员的个人订单情况
-                $deliverer = Deliverer::where('deliverer_id','=',$deliverer_id);
+                $deliverer = Deliverer::where('deliverer_id','=',$deliverer_id)->frist();
                 //总订单+1
                 $deliverer->order_count += 1;
                 //总收入+money
@@ -434,6 +436,7 @@ class OrderController extends Controller
         foreach ($receivedOrder as $k => $v){
             $v['express'] = Express::where('express_id','=',$v['express_id'])->select('name')->first()['name'];
             unset($v['express_id']);
+            $v['status_num'] = $v['status'];
             $v['status'] = $this->statusArr[$v['status']];
         }
         return self::setResponse($receivedOrder, 200, 0);

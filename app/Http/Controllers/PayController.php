@@ -36,7 +36,7 @@ class PayController extends Controller
         $data['out_trade_no'] = $order_id; //订单号id,用于回调改订单状态
         $data['total_fee'] = $total_fee; //支付金额，单位为分！！
         $data['spbill_create_ip'] = '134.175.42.59'; //验证ip地址，这个不用改随意
-        $data['notify_url'] = "https://zhaiji.hammerfood.cn/order/notify_url"; //微信支付成功的回调路径，要写死这个路径，记得要是小程序允许访问的路径
+        $data['notify_url'] = "https://api.zhaiji.xyz/order/notify_url"; //微信支付成功的回调路径，要写死这个路径，记得要是小程序允许访问的路径
         $data['trade_type'] = "JSAPI"; //小程序支付，所以是JSAPI
 
         // --------------------以下这一串都不用改--------------------------------
