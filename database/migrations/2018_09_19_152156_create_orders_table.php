@@ -38,7 +38,6 @@ class CreateOrdersTable extends Migration
             $table->string('cancel_reason')->nullable();
             $table->string('refund_apply')->nullable()->defalt(0);
             $table->string('refund_status')->nullable();
-            $table->string('cancel_reason')->nullable();
             $table->primary('order_id');
             $table->index('order_id');
             $table->timestamps();

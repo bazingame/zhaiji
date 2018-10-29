@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Models\Deliverer;
 use App\Models\Express;
+use App\Models\Lottery;
 use App\Models\Order;
 use App\Models\Statistics;
 use App\Models\User;
@@ -155,6 +156,15 @@ class OrderController extends Controller
             $payRes = $pay->payOrder($order->order_id,$request->money,$open_id);
 
             if(isset($payRes['status'])&&$payRes['status']=='SUCCESS'){
+
+                //抽奖判断
+                $lottery = new Lottery($order);
+                if(!$lottery){
+                    $payRes['lottery'] = $lottery;
+                }else{
+                    $payRes['lottery'] = false;
+                }
+
                 $payRes['order_id'] = $order->order_id;
                 return self::setResponse($payRes,200,0);
             }else{
@@ -337,7 +347,7 @@ class OrderController extends Controller
                 $order->finish_time = Date("Y-m-d H:i:s",time());
 
                 //更新配送员的个人订单情况
-                $deliverer = Deliverer::where('deliverer_id','=',$deliverer_id)->frist();
+                $deliverer = Deliverer::where('deliverer_id','=',$deliverer_id)->first();
                 //总订单+1
                 $deliverer->order_count += 1;
                 //总收入+money

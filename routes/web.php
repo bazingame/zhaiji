@@ -15,9 +15,9 @@
 //Route::get('/', function () {
 //});
 
-Route::get('/test',function(){
-    return 'test fine!';
-});
+
+Route::get('/test','LotteryController@getLottery');
+
 //换取用户唯一标识 OpenID
 Route::post('code','LoginController@getOpenID');
 

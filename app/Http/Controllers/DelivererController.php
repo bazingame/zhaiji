@@ -27,6 +27,7 @@ class DelivererController extends Controller
         }
         if($deliverer = Deliverer::where('deliverer_id','=',$deliverer_id)->first()){
             $phone = $deliverer->phone;
+            $deliverer_id = $deliverer->deliverer_id;
             $name = $deliverer->name;
             $order_amount= $deliverer->order_amount;
             $mark= $deliverer->mark;
