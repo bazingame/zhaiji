@@ -14,12 +14,24 @@ class LotteryController extends Controller
     //
     public function getLottery(Order $order)
     {
-        //根据时间判断是否有可用抽奖
-        if ($lottery = Lottery::where('end_time', '>', Date('Y-m-d H:i:s', time()))->first()) {
-            $lottery_type = $lottery->type;
-            $remain_total_count = $lottery->remain_total_count;
-            //时间类型抽奖
-            if ($lottery_type == 'time' && $remain_total_count!=0) {
+        $order = new Order();
+        $order->user_id = '11';
+        $order->order_id = '11';
+
+        //根据次数判断是否有可用的次数类型抽奖
+        if ($lottery_list = Lottery::where('end_time', '>', Date('Y-m-d H:i:s', time()))->where('type','=','num')->where('remain_total_count','>',0)->get()) {
+            //获取下单次数
+            $order_record_num = count(Order::where('user_id','=',$order->user_id)->where('status','=',3)->get());
+            $lottery = null;
+            foreach ($lottery_list as $key => $val){
+                if($order_record_num==$val['order_count_get_chance']){
+                    $lottery = $val;
+                    break;
+                }
+            }
+
+            if($lottery!=null){
+                $remain_total_count = $lottery->remain_total_count;
                 $award_list = Award::where('lottery_id', '=', $lottery->id)->get();
                 //过滤可用奖品
                 $total_probability = 0;
@@ -62,11 +74,59 @@ class LotteryController extends Controller
 
                 $notice = json_decode($lottery->notice,true);
                 return array('lottery_type' => 'time', 'award_list' => $award_list, 'award_index' => $final_select,'notice'=>$notice,'sub_title'=>$lottery->sub_title);
-                //次数类型抽奖
-            } elseif($lottery_type == 'num' && $remain_total_count!=0) {
 
-            }else{
-                return 1;
+            }
+        }
+
+
+        //根据时间判断是否有可用的节日类型抽奖
+        if ($lottery = Lottery::where('end_time', '>', Date('Y-m-d H:i:s', time()))->where('type','=','time')->where('remain_total_count','>',0)->first()) {
+            $remain_total_count = $lottery->remain_total_count;
+            //检查抽奖记录
+            //有记录
+            if(!$lottery_record = AwardRecord::where('lottery_id','=',$lottery->id)->where('user_id','=',$order->user_id)->first()){
+                $award_list = Award::where('lottery_id', '=', $lottery->id)->get();
+                //过滤可用奖品
+                $total_probability = 0;
+                $avilable_list_count = 0;
+                foreach ($award_list as $k => $value) {
+                    if ((int)$value['remain_count'] > 0) {
+                        $avilable_award[$avilable_list_count]['index'] = (int)$value['award_index'];
+                        $avilable_award[$avilable_list_count]['probability'] = ($value['remain_count'] / $remain_total_count) * 100;
+                        $total_probability += ($value['remain_count'] / $remain_total_count) * 100;
+                        $avilable_list_count++;
+                    }
+                }
+                //计算概率模型
+                $randNum = rand(1, $total_probability);
+                $lowNum = 1;
+                $final_select = 0;
+                for ($i = 0; $i < $avilable_list_count; $i++) {
+                    $highNum = $lowNum + $avilable_award[$i]['probability'];
+                    if ($lowNum <= $randNum && $randNum <= $highNum) {
+                        $final_select =  $avilable_award[$i]['index'];
+                        break;
+                    } else {
+                        $lowNum = $highNum;
+                    }
+                }
+                //更新单个奖品和lottery
+                $award_confer = Award::where('lottery_id', '=', $lottery->id)->where('award_index', '=', $final_select)->first();
+                $award_confer->remain_count = $award_confer->remain_count - 1;
+                $award_confer->save();
+                $lottery->remain_total_count = $lottery->remain_total_count-1;
+                $lottery->save();
+
+                //记录
+                $award_record = new AwardRecord();
+                $award_record->lottery_id = $lottery->id;
+                $award_record->user_id = $order->user_id;
+                $award_record->order_id = $order->order_id;
+                $award_record->award_index = $final_select;
+                $award_record->save();
+
+                $notice = json_decode($lottery->notice,true);
+                return array('lottery_type' => 'time', 'award_list' => $award_list, 'award_index' => $final_select,'notice'=>$notice,'sub_title'=>$lottery->sub_title);
             }
         }else{
             return false;
