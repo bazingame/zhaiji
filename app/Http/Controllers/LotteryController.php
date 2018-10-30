@@ -14,14 +14,11 @@ class LotteryController extends Controller
     //
     public function getLottery(Order $order)
     {
-        $order = new Order();
-        $order->user_id = '11';
-        $order->order_id = '11';
 
         //根据次数判断是否有可用的次数类型抽奖
         if ($lottery_list = Lottery::where('end_time', '>', Date('Y-m-d H:i:s', time()))->where('type','=','num')->where('remain_total_count','>',0)->get()) {
             //获取下单次数
-            $order_record_num = count(Order::where('user_id','=',$order->user_id)->where('status','=',3)->get());
+            $order_record_num = count(Order::where('user_id','=',$order->user_id)->get());
             $lottery = null;
             foreach ($lottery_list as $key => $val){
                 if($order_record_num==$val['order_count_get_chance']){
@@ -29,7 +26,7 @@ class LotteryController extends Controller
                     break;
                 }
             }
-
+            //下单次数没有对应奖品
             if($lottery!=null){
                 $remain_total_count = $lottery->remain_total_count;
                 $award_list = Award::where('lottery_id', '=', $lottery->id)->get();
@@ -74,7 +71,6 @@ class LotteryController extends Controller
 
                 $notice = json_decode($lottery->notice,true);
                 return array('lottery_type' => 'time', 'award_list' => $award_list, 'award_index' => $final_select,'notice'=>$notice,'sub_title'=>$lottery->sub_title);
-
             }
         }
 
@@ -110,6 +106,7 @@ class LotteryController extends Controller
                         $lowNum = $highNum;
                     }
                 }
+
                 //更新单个奖品和lottery
                 $award_confer = Award::where('lottery_id', '=', $lottery->id)->where('award_index', '=', $final_select)->first();
                 $award_confer->remain_count = $award_confer->remain_count - 1;
@@ -127,9 +124,19 @@ class LotteryController extends Controller
 
                 $notice = json_decode($lottery->notice,true);
                 return array('lottery_type' => 'time', 'award_list' => $award_list, 'award_index' => $final_select,'notice'=>$notice,'sub_title'=>$lottery->sub_title);
+            }else{
+                return false;
             }
         }else{
             return false;
         }
+    }
+
+    public function getLotteryList(Request $request){
+        $user_id = $this->getUserId($request);
+        $award_list = AwardRecord::join('award',function ($join) {
+            $join->on('award.lottery_id', '=', 'award_record.lottery_id')->on('award.award_index', '=', 'award_record.award_index');
+        })->where('user_id','=',$user_id)->get();
+        return self::setResponse($award_list,200,0);
     }
 }
