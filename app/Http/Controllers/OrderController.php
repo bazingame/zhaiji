@@ -156,15 +156,6 @@ class OrderController extends Controller
             $payRes = $pay->payOrder($order->order_id,$request->money,$open_id);
 
             if(isset($payRes['status'])&&$payRes['status']=='SUCCESS'){
-
-                //抽奖判断
-                $lottery = new Lottery($order);
-                if(!$lottery){
-                    $payRes['lottery'] = $lottery;
-                }else{
-                    $payRes['lottery'] = false;
-                }
-
                 $payRes['order_id'] = $order->order_id;
                 return self::setResponse($payRes,200,0);
             }else{
@@ -196,7 +187,16 @@ class OrderController extends Controller
                     $order->pay_status = -1;
                 }
                 if($order->save()){
-                    return self::setResponse(null,200,0);
+                    //抽奖判断
+                    $lotteryController = new LotteryController();
+                    $lottery = $lotteryController->getLottery($order);
+                    if($lottery){
+                        $res['lottery'] = $lottery;
+                    }else{
+                        $res['lottery'] = false;
+                    }
+
+                    return self::setResponse($res,200,0);
                 }else{
                     return self::setResponse(null,400,-4006);
                 }

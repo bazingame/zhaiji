@@ -14,9 +14,6 @@ class LotteryController extends Controller
     //
     public function getLottery(Order $order)
     {
-        $order = new Order();
-        $order->user_id = 'U_00000001';
-        $order->order_id = 'O_00000001';
         //根据时间判断是否有可用抽奖
         if ($lottery = Lottery::where('end_time', '>', Date('Y-m-d H:i:s', time()))->first()) {
             $lottery_type = $lottery->type;
@@ -48,7 +45,6 @@ class LotteryController extends Controller
                         $lowNum = $highNum;
                     }
                 }
-
                 //更新单个奖品和lottery
                 $award_confer = Award::where('lottery_id', '=', $lottery->id)->where('award_index', '=', $final_select)->first();
                 $award_confer->remain_count = $award_confer->remain_count - 1;
@@ -69,7 +65,7 @@ class LotteryController extends Controller
             } elseif($lottery_type == 'num' && $remain_total_count!=0) {
 
             }else{
-                return false;
+                return 1;
             }
         }else{
             return false;
