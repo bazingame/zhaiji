@@ -19,7 +19,8 @@ class CreateLotteryTable extends Migration
             $table->string('total_count')->comment('预计抽奖次数');
             $table->string('remain_total_count')->comment('剩余抽奖次数');
             $table->string('award_count')->comment('奖品数量');
-            $table->string('order_count_get_chance')->nullable()->comment('type为num时，第几次下单可以抽奖');
+            $table->string('notice');
+            $table->string('sub_title');
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->timestamps();

@@ -60,7 +60,8 @@ class LotteryController extends Controller
                 $award_record->award_index = $final_select;
                 $award_record->save();
 
-                return array('lottery_type' => 'time', 'award_list' => $award_list, 'award_index' => $final_select);
+                $notice = json_decode($lottery->notice,true);
+                return array('lottery_type' => 'time', 'award_list' => $award_list, 'award_index' => $final_select,'notice'=>$notice,'sub_title'=>$lottery->sub_title);
                 //次数类型抽奖
             } elseif($lottery_type == 'num' && $remain_total_count!=0) {
 
