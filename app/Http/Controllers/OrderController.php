@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\Award;
+use App\Models\AwardRecord;
 use App\Models\Deliverer;
 use App\Models\Express;
 use App\Models\Lottery;
@@ -138,6 +140,14 @@ class OrderController extends Controller
         $order->status = 1;
         $order->mark_status = 0;
         $order->order_time = Date("Y-m-d H:i:s",time());
+
+        //如果优惠卷使用 记录并修改优惠卷状态
+        if($request->coupon_used) {
+            $order->coupon_id = $request->coupon_id;
+            $coupon = AwardRecord::where('id','=',$request->coupon_id)->first();
+            $coupon->used = 1;
+            $coupon->save();
+        }
 
         $statistics = Statistics::where('id','=',1)->first();
         $order_count = $statistics['order_count'];
