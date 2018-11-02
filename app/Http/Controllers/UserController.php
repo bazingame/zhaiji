@@ -14,7 +14,7 @@ class UserController extends Controller
         /*暂时不收集用户头像*/
         /*head_img为随机*/
         /*暂时不收集用户头像*/
-        $request->headimg_url = env("APP_URL")."/storage/images/package1.png";
+        $request->headimg_url = env("APP_URL")."/storage/images/boy.png";
 
         if (!$request->has("open_id") || !$request->has("phone") ) {
             return self::setResponse(null,400,-4001);

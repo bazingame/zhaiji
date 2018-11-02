@@ -16,7 +16,7 @@
 //});
 
 
-Route::get('/test','LotteryController@getLotteryList');
+Route::get('/test','LotteryController@getMoneryLottery');
 
 //换取用户唯一标识 OpenID
 Route::post('code','LoginController@getOpenID');
@@ -40,6 +40,8 @@ Route::group(['prefix'=>'user'],function (){
     Route::delete('/{user_id}','UserController@deleteUser');
     //获取抽奖记录
     Route::get('/lottery','LotteryController@getLotteryList');
+    //获取优惠券记录
+    Route::get('/coupon','LotteryController@getMoneryLottery');
 });
 
 //订单相关

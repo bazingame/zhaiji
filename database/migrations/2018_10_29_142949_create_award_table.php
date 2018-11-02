@@ -18,6 +18,8 @@ class CreateAwardTable extends Migration
             $table->string('lottery_id');
             $table->string('award_name');
             $table->string('award_index');
+            $table->string('award_type')->nullable();
+            $table->integer('money_award_amount')->nullable();
             $table->string('count');
             $table->string('remain_count');
             $table->timestamps();

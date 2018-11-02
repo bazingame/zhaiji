@@ -33,6 +33,7 @@ class CreateOrdersTable extends Migration
             $table->dateTime('take_order_time')->nullable();
             $table->dateTime('finish_time')->nullable();
             $table->string('mark')->nullable();
+            $table->string('coupon_id')->nullable();
             $table->string('mark_status')->nullable()->comment('0=>未评价,1=>已评价');
             $table->string('note')->nullable();
             $table->string('cancel_reason')->nullable();

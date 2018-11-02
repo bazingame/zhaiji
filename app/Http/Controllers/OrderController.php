@@ -135,14 +135,13 @@ class OrderController extends Controller
         $order->package_id = $request->package_id;
         $order->insurance = $request->insurance;
         $order->note = $request->note;
-        $order->money = $request->money;
+        $order->money = $request->coupon_id;
         $order->package_size = $request->package_size;
         $order->status = 1;
         $order->mark_status = 0;
         $order->order_time = Date("Y-m-d H:i:s",time());
-
         //如果优惠卷使用 记录并修改优惠卷状态
-        if($request->coupon_used) {
+        if($request->u_ask_me_why_so_long=='true') {
             $order->coupon_id = $request->coupon_id;
             $coupon = AwardRecord::where('id','=',$request->coupon_id)->first();
             $coupon->used = 1;

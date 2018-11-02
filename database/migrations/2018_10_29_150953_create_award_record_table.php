@@ -20,6 +20,7 @@ class CreateAwardRecordTable extends Migration
             $table->string('order_id');
             $table->string('award_index');
             $table->string('award_name');
+            $table->integer('used')->default(0);
             $table->timestamps();
         });
     }

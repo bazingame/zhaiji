@@ -142,7 +142,7 @@ class LotteryController extends Controller
 
     //获取未使用的优惠券!!只返回一个
     public function getMoneryLottery(Request $request){
-        $user_id = 'U_00000036';
+        $user_id = $this->getUserId($request);
         $award_list = AwardRecord::join('award',function ($join) {
             $join->on('award.lottery_id', '=', 'award_record.lottery_id')->on('award.award_index', '=', 'award_record.award_index');
         })->select('award_record.id','money_award_amount')->where('user_id','=',$user_id)->where('award_type','=','coupon')->where('used','=',0)->get();
