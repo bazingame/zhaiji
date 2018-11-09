@@ -37,8 +37,8 @@ class DelivererController extends Controller
             //总订单
             $order_count = $deliverer->order_count;
             //判断是否今日最新
-            $update_time = substr($deliverer->update_time,0,10);
-            if($update_time!=Date("Y-m-d",time())) {
+            $updated_at = substr($deliverer->updated_at,0,10);
+            if($updated_at!=Date("Y-m-d",time())) {
                 //今日收入
                 $order_money_today = 0;
                 //今日订单

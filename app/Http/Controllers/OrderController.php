@@ -393,18 +393,20 @@ class OrderController extends Controller
                 $deliverer->order_count += 1;
                 //总收入+money
                 $deliverer->order_money += $order->money_no_coupon;
-                $update_time = substr($deliverer->update_time, 0, 10);
-                //上一次订单不是今天的  清零 今日订单+1 今日订单+money
-                if ($update_time != Date("Y-m-d", time())) {
+                $updated_at = substr($deliverer->updated_at, 0, 10);
+                //上一次订单不是今天的  清零 今日订单 今日订单money
+                if ($updated_at != Date("Y-m-d", time())) {
                     $deliverer->order_count_today = 1;
                     $deliverer->order_money_today = $order->money_no_coupon;
+                    $deliverer->updated_at =  Date("Y-m-d", time());
                 }else{
-                    $deliverer->order_count_today += 1;
-                    $deliverer->order_money_today += $order->money_no_coupon;
+                    $deliverer->order_count_today = $deliverer->order_count_today  + 1;
+                    $deliverer->order_money_today = $deliverer->order_money_today  + $order->money_no_coupon;
+                    $deliverer->updated_at =  Date("Y-m-d", time());
                 }
 
                 if ($order->save() && $deliverer->save()) {
-                    return self::setResponse(array('status_code' => '3', 'status' => '已完成'), 200, 0);
+                    return self::setResponse(array('status_code' => '3', 'status' => '已完成','deliverer'=>$deliverer), 200, 0);
                 } else {
                     return self::setResponse(null, 500, -4006);
                 }
