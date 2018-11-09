@@ -38,6 +38,7 @@ class LoginController extends Controller
             $data = array(
                 'authorization'=>encrypt($deliverer->deliverer_id),
                 'type'=>'deliverer',
+                'type'=>$deliverer->phone,
             );
             return self::setResponse($data,200,0);
             //未注册
