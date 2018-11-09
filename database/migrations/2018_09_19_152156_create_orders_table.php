@@ -24,6 +24,7 @@ class CreateOrdersTable extends Migration
             $table->string('distance')->nullable();
             $table->string('valuation')->nullable()->comment('估值');
             $table->string('money');
+            $table->string('money_no_coupon')->nullable()->comment('未用优惠卷金额');
             $table->string('package_size');
             $table->string('status')->comment("1=>未接单,2=>已接单,3=>已完成,4=>已取消,5=>申请取消中,6=>取消失败");
             $table->string('pay_stauts')->comment("0=>未支付,1=>支付成功,-1=>支付失败");

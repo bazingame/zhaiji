@@ -47,8 +47,7 @@ class PayController extends Controller
         $xml = $this->arrayToXml($data);
         $r = $this->postXmlCurl($xml, $url, true);
         $result = json_decode($this->xml_to_json($r), true);
-
-        if ($result['return_code'] == 'SUCCESS') {
+        if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
             $sdata['appId'] = $appid;
             $sdata['timeStamp'] = '' . time();
             $sdata['nonceStr'] = md5(time() . rand() . rand() . $openid);
@@ -101,7 +100,7 @@ class PayController extends Controller
         $data['mch_id'] = $MCHID;    //商户号id
         $data['nonce_str'] = md5($MCHID . time()); //验证的支付
         $data['out_trade_no'] = $order_id; //商户系统内部订单号
-        $data['out_refund_no'] = 'T'.substr($order_id,1,9); //商户退款单号
+        $data['out_refund_no'] = 'T'.substr($order_id,1,17); //商户退款单号
         $data['total_fee'] = $total_free; //订单金额
         $data['refund_fee'] = $total_free; //退款金额
 

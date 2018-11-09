@@ -137,6 +137,7 @@ class OrderController extends Controller
         $order->insurance = $request->insurance;
         $order->note = $request->note;
         $order->money = $request->money;
+        $order->money_no_coupon = $request->money_no_coupon;
         $order->coupon_id = $request->coupon_id;
         $order->package_size = $request->package_size;
         $order->status = 1;
@@ -152,7 +153,7 @@ class OrderController extends Controller
 
         $statistics = Statistics::where('id', '=', 1)->first();
         $order_count = $statistics['order_count'];
-        $order->order_id = "O_" . sprintf("%08d", $order_count + 1);
+        $order->order_id = "O_" .Date("Ymd", time()). sprintf("%08d", $order_count + 1);
 
         if ($order->save()) {
             $statistics = Statistics::where('id', '=', 1)->first();
@@ -391,12 +392,15 @@ class OrderController extends Controller
                 //总订单+1
                 $deliverer->order_count += 1;
                 //总收入+money
-                $deliverer->order_money += $order->money;
+                $deliverer->order_money += $order->money_no_coupon;
                 $update_time = substr($deliverer->update_time, 0, 10);
                 //上一次订单不是今天的  清零 今日订单+1 今日订单+money
                 if ($update_time != Date("Y-m-d", time())) {
                     $deliverer->order_count_today = 1;
-                    $deliverer->order_money_today = $order->money;
+                    $deliverer->order_money_today = $order->money_no_coupon;
+                }else{
+                    $deliverer->order_count_today += 1;
+                    $deliverer->order_money_today += $order->money_no_coupon;
                 }
 
                 if ($order->save() && $deliverer->save()) {
