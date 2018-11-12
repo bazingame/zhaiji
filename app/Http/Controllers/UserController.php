@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Deliverer;
 use App\Models\Statistics;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,8 +24,16 @@ class UserController extends Controller
         if(User::where('open_id','=',$request->open_id)->first()){
             return self::setResponse(null,400,-4004);
         }
+        //微信号已注册
+        if(Deliverer::where('open_id','=',$request->open_id)->first()){
+            return self::setResponse(null,400,-4004);
+        }
         //号码已经注册
         if(User::where('phone','=',$request->phone)->first()){
+            return self::setResponse(null,400,-4003);
+        }
+
+        if(Deliverer::where('phone','=',$request->phone)->first()){
             return self::setResponse(null,400,-4003);
         }
         //TODO 号码格式验证

@@ -61,7 +61,7 @@ class ProfessController extends Controller
 
 
             /*暂时不收集用户头像*/
-            $new_user->headimg_url = env("APP_URL")."/storage/images/package1.png";
+            $new_user->headimg_url = env("APP_URL")."/storage/images/boy.png";
 
 
             if($new_user->save()){
