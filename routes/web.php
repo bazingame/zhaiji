@@ -90,7 +90,9 @@ Route::group(['prefix'=>'deliverer'],function (){
     //接单
     Route::post('/receive/{order_id}',['middleware'=>'user_auth','uses'=>'OrderController@receiveOrder']);
     //取消订单
-    Route::put('/cancel/{order_id}','OrderController@cancelOrder');
+    Route::put('/cancel/{order_id}','OrderController@cancelReceiveOrder');
+    //取消接单
+    Route::put('/cancel-receive/{order_id}','OrderController@cancelOrder');
     //拒绝取消订单
     Route::put('/refuse-cancel/{order_id}','OrderController@refuseCancelOrder');
     //获取配送员信息

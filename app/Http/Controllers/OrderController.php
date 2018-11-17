@@ -346,6 +346,34 @@ class OrderController extends Controller
         }
     }
 
+    //取消接单(快递员操作)
+    public function cancelReceiveOrder(Request $request){
+        $deliverer_id = $this->getUserId($request);
+        if (substr($deliverer_id, 0, 1) != 'D') {
+            return self::setResponse(null, 400, -4051);
+        }
+        $order_id = $request->order_id;
+        if ($order = Order::where('order_id', '=', $order_id)->where('deliverer_id', '=', $deliverer_id)->first()) {
+            //只有状态为已接单才可以取消
+            //'1'=>'未接单','2'=>'已接单','3'=>'已完成','4'=>'已取消','5'=>'申请取消中','6'=>'取消失败'
+            //直接取消
+            if ($order->status == 2) {
+                $order->status = 1;
+                $order->take_order_time = null;
+                $order->deliverer_id = null;
+                if ($order->save()) {
+                    return self::setResponse(array('1' => '4', 'status' => '已恢复未接单接单'), 200, 0);
+                } else {
+                    return self::setResponse(null, 400, -4006);
+                }
+            } else {
+                return self::setResponse(null, 400, -4028);
+            }
+        } else {
+            return self::setResponse(null, 400, -4025);
+        }
+    }
+
     //拒绝取消订单(快递员操作)
     public function refuseCancelOrder(Request $request)
     {
