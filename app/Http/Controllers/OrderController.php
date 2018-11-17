@@ -347,7 +347,7 @@ class OrderController extends Controller
     }
 
     //取消接单(快递员操作)
-    public function cancelReceiveOrder(Request $request){
+    public function cancelReceivedOrder(Request $request){
         $deliverer_id = $this->getUserId($request);
         if (substr($deliverer_id, 0, 1) != 'D') {
             return self::setResponse(null, 400, -4051);
